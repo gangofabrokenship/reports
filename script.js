@@ -806,11 +806,14 @@ ${dateVal}, ${timeRange} (${units} единиц)
         result =
 `Смена ${rank}
 ${fromName} [${fromId}]${buPart}, сменил ${toName} [${toId}] в ${time}`;
-        } else if (t === 'pear_add') {
-            const rank = qs('sharkAddRank').value;
-            const name = qs('sharkAddName').value.trim() || 'ИМЯ';
-            const id = qs('sharkAddId').value.trim() || 'ID';
-            result = `+${rank}, ${name} [${id}] (БУ)`;
+              } else if (t === 'pear_add') {
+        const rank = qs('sharkAddRank').value;
+        const name = qs('sharkAddName').value.trim() || 'ИМЯ';
+        const id = qs('sharkAddId').value.trim() || 'ID';
+        const buEl = qs('sharkAddBu');
+        const bu = buEl ? buEl.value.trim() : '';
+        const buPart = bu !== '' ? ` (${bu})` : '';
+        result = `+${rank}, ${name} [${id}]${buPart}`;
         } else if (t === 'resources') {
             const id = qs('sharkResId').value.trim() || 'ID';
             const name = qs('sharkResName').value.trim() || 'название ресурса';

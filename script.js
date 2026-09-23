@@ -600,11 +600,74 @@ function updateFoodForm() {
     document.querySelectorAll('.food-sub-galley').forEach(el =>
         el.classList.toggle('hidden', type !== 'galley'));
 }
+
+// Пересобрать поля улова для каждого участника
+function rebuildFoodPatrolCatchFields() {
+    const wrap = qs('foodPatrolCatchWrap');
+    if (!wrap) return;
+
+    // Запоминаем уже введённые значения, чтобы не терять их при пересборке
+    const saved = {};
+    wrap.querySelectorAll('input[data-catch-id]').forEach(inp => {
+        const id = inp.dataset.catchId;
+        const kind = inp.dataset.catchKind;
+        if (!saved[id]) saved[id] = {};
+        saved[id][kind] = inp.value;
+    });
+
+    const ids = qs('foodPatrolParts').value.trim().split(/\s+/).filter(Boolean);
+    wrap.innerHTML = '';
+
+    if (ids.length === 0) return;
+
+    ids.forEach(id => {
+        const block = document.createElement('div');
+        block.className = 'grid';
+        block.style.marginTop = '8px';
+        block.style.padding = '8px';
+        block.style.border = '1px dashed rgba(0,0,0,0.15)';
+        block.style.borderRadius = '4px';
+
+        const title = document.createElement('div');
+        title.className = 'full';
+        title.style.fontSize = '11px';
+        title.style.fontWeight = 'bold';
+        title.style.opacity = '0.8';
+        title.textContent = `Улов участника [${id}]`;
+        block.appendChild(title);
+
+        ['хилых', 'обычных', 'упитанных'].forEach(kind => {
+            const cell = document.createElement('div');
+            const lbl = document.createElement('label');
+            lbl.textContent = kind;
+            const inp = document.createElement('input');
+            inp.type = 'number';
+            inp.min = '0';
+            inp.placeholder = '0';
+            inp.dataset.catchId = id;
+            inp.dataset.catchKind = kind;
+            if (saved[id] && saved[id][kind] !== undefined) {
+                inp.value = saved[id][kind];
+            }
+            cell.appendChild(lbl);
+            cell.appendChild(inp);
+            block.appendChild(cell);
+        });
+
+        wrap.appendChild(block);
+    });
+}
+
+// Привязка обработчиков
 if (qs('foodType')) {
     qs('foodType').onchange = updateFoodForm;
     updateFoodForm();
 }
+if (qs('foodPatrolParts')) {
+    qs('foodPatrolParts').addEventListener('input', rebuildFoodPatrolCatchFields);
+}
 
+// Генерация отчёта
 if (qs('foodGenerate')) {
     qs('foodGenerate').onclick = () => {
         const type = qs('foodType').value;
@@ -620,23 +683,36 @@ if (qs('foodGenerate')) {
         if (type === 'hunt_patrol') {
             const collector = qs('foodPatrolCollector').value.trim() || 'ID';
             const lead = qs('foodPatrolLead').value.trim() || 'ID';
-            const parts = fmtIds(qs('foodPatrolParts').value);
             const helpers = fmtIds(qs('foodPatrolHelpers').value);
+
+            // Собираем улов по каждому участнику
+            const ids = qs('foodPatrolParts').value.trim().split(/\s+/).filter(Boolean);
+            const catchMap = {};
+            qs('foodPatrolCatchWrap').querySelectorAll('input[data-catch-id]').forEach(inp => {
+                const id = inp.dataset.catchId;
+                const kind = inp.dataset.catchKind;
+                if (!catchMap[id]) catchMap[id] = { 'хилых': 0, 'обычных': 0, 'упитанных': 0 };
+                catchMap[id][kind] = Number(inp.value) || 0;
+            });
+
+            const partsStr = ids.length === 0
+                ? '[linkID] [ID] (0 хилых/0 обычных/0 упитанных)'
+                : ids.map(id => {
+                    const c = catchMap[id] || { 'хилых': 0, 'обычных': 0, 'упитанных': 0 };
+                    return `[link${id}] [${id}] (${c['хилых']} хилых/${c['обычных']} обычных/${c['упитанных']} упитанных)`;
+                }).join(', ');
+
             result =
 `[b]${date}[/b]
 [b]Охотничий патруль.[/b]
 Время сбора: ${qs('foodPatrolTime').value}
 Собирающий: [link${collector}] [${collector}]
 Ведущий: [link${lead}] [${lead}]
-Участники: ${parts}
+Участники: ${partsStr}
 Помощники: ${helpers}`;
         } else if (type === 'solo_hunt') {
             const id = qs('foodSoloId').value.trim() || 'ID';
-            let catchStr = qs('foodSoloCatch').value.trim() || '-';
-            const nums = catchStr.split(/\s+/);
-            if (nums.length === 3 && nums.every(n => !isNaN(n))) {
-                catchStr = `${nums[0]} ${nums[1]} ${nums[2]}`;
-            }
+            const catchStr = qs('foodSoloCatch').value.trim() || '0 0 0';
             const proof = qs('foodSoloProof').value.trim() || '-';
             result =
 `[b]${date}[/b]
@@ -654,6 +730,7 @@ if (qs('foodGenerate')) {
 Кол-во уничтоженной падали: ${count}.
 [ [url=${proof}]скриншот истории[/url] ]`;
         }
+
         qs('foodResult').value = result;
     };
 }

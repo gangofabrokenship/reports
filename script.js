@@ -515,24 +515,87 @@ if (eskTypeSelect && eskLeadCheckbox) {
 }
 
 if (qs('octoDate')) qs('octoDate').value = getMoscowDate();
+// ===================== ОТРЯД ОСЬМИНОГОВ (НАВИГАТОРЫ) =====================
+function updateOctoForm() {
+    const type = qs('octoType').value;
+    const isTrip = type === 'trip';
+
+    // Показываем блоки полей
+    document.querySelectorAll('.octo-sub-trip').forEach(el =>
+        el.classList.toggle('hidden', !isTrip));
+    document.querySelectorAll('.octo-sub-clean').forEach(el =>
+        el.classList.toggle('hidden', isTrip));
+
+    // Доказательства только в блог-вариантах чистки/сортировки
+    const isBlogClean = type.endsWith('_blog');
+    document.querySelectorAll('.octo-sub-blog').forEach(el =>
+        el.classList.toggle('hidden', !isBlogClean));
+}
+if (qs('octoType')) {
+    qs('octoType').onchange = updateOctoForm;
+    updateOctoForm();
+}
+if (qs('octoDate'))  qs('octoDate').value  = getMoscowDate();
+if (qs('octoDate2')) qs('octoDate2').value = getMoscowDate();
+
 if (qs('octoGenerate')) {
     qs('octoGenerate').onclick = () => {
-        const date = qs('octoDate').value.trim() || 'дд.мм.гг';
-        const navId = qs('octoNavId').value.trim() || 'ID';
-        const rawParts = qs('octoPartIds').value.trim();
-        const partsArr = rawParts.split(/[\s,]+/).filter(Boolean);
-        const partsStr = partsArr.length > 0
-            ? partsArr.map(id => `[link${id}] [${id}]`).join(', ')
-            : '[linkID] [ID]';
-        const proofsRaw = qs('octoProofs').value.trim();
-        const proofsText = proofsRaw === ''
-            ? '\nСкриншоты были отправлены в беседу навигаторов.'
-            : makeProofs(proofsRaw);
-        const text = `[b]Дата проведения: ${date}[/b]\n[b]Навигатор:[/b] [link${navId}] [${navId}].\n[b]Участники:[/b] ${partsStr}.${proofsText}`;
-        qs('octoResult').value = text;
+        const type = qs('octoType').value;
+        let result = '';
+
+        // ---------- МОРСКАЯ ВЫЛАЗКА ----------
+        if (type === 'trip') {
+            const date = qs('octoDate').value.trim() || 'дд.мм.гг';
+            const navId = qs('octoNavId').value.trim() || 'ID';
+            const rawParts = qs('octoPartIds').value.trim();
+            const partsArr = rawParts.split(/[\s,]+/).filter(Boolean);
+            const partsStr = partsArr.length > 0
+                ? partsArr.map(id => `[link${id}] [${id}]`).join(', ')
+                : '[linkID] [ID]';
+            const proofsRaw = qs('octoProofs').value.trim();
+            const proofsText = proofsRaw === ''
+                ? '\nСкриншоты были отправлены в беседу навигаторов.'
+                : makeProofs(proofsRaw);
+            result = `[b]Дата проведения: ${date}[/b]\n[b]Навигатор:[/b] [link${navId}] [${navId}].\n[b]Участники:[/b] ${partsStr}.${proofsText}`;
+        }
+
+        // ---------- ЧИСТКА / СОРТИРОВКА ----------
+        else {
+            const isSort = type.startsWith('sort');
+            const isVk = type.endsWith('_vk');
+            const isLager = type.startsWith('clean_lager');
+            const isOfflager = type.startsWith('clean_offlager');
+
+            const date = qs('octoDate2').value.trim() || getMoscowDate();
+            const myId = qs('octoMyId').value.trim() || 'ID';
+            const count = qs('octoCatCount').value.trim() || '0';
+            const proof = qs('octoProof').value.trim();
+
+            let title = '';
+            if (isSort) title = 'Сортировка';
+            else if (isLager) title = 'Чистка лагеря';
+            else if (isOfflager) title = 'Чистка внелагеря';
+
+            const actionWord = isSort ? 'отсортированных' : 'убранных';
+
+            if (isVk) {
+                result =
+`#отчет
+${title}, ${date}
+Осьминог: ${myId}
+Количество ${actionWord} котов: ${count}`;
+            } else {
+                const proofBlock = proof ? `\n[url=${proof}]скриншот истории[/url]` : '';
+                result =
+`[b]${title}[/b], ${date}
+[b]Осьминог:[/b] ${myId}
+[b]Количество ${actionWord} котов:[/b] ${count}${proofBlock}`;
+            }
+        }
+
+        qs('octoResult').value = result;
     };
 }
-
 const guardLocs = ['Дыра в корабле', 'Извилистая тропа', 'Искажённая чаща', 'Тихий залив', 'Лазурная бухта', 'Отдалённая лазурная бухта'];
 const guardRoutes = ['А', 'Б', 'В'];
 function updateGuardForm() {

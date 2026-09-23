@@ -622,37 +622,40 @@ function rebuildFoodPatrolCatchFields() {
 
     ids.forEach(id => {
         const block = document.createElement('div');
-        block.className = 'grid';
-        block.style.marginTop = '8px';
-        block.style.padding = '8px';
+        block.style.display = 'grid';
+        block.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))'; // три равных колонки
+        block.style.gap = '6px 8px';
+        block.style.marginTop = '6px';
+        block.style.padding = '6px 8px';
         block.style.border = '1px dashed rgba(0,0,0,0.15)';
         block.style.borderRadius = '4px';
 
         const title = document.createElement('div');
-        title.className = 'full';
-        title.style.fontSize = '11px';
+        title.style.gridColumn = '1 / -1';      // растянуть на все 3 колонки
+        title.style.fontSize = '10px';
         title.style.fontWeight = 'bold';
-        title.style.opacity = '0.8';
+        title.style.opacity = '0.75';
+        title.style.marginBottom = '2px';
         title.textContent = `Улов участника [${id}]`;
         block.appendChild(title);
 
-        ['хилых', 'обычных', 'упитанных'].forEach(kind => {
-            const cell = document.createElement('div');
-            const lbl = document.createElement('label');
-            lbl.textContent = kind;
-            const inp = document.createElement('input');
-            inp.type = 'number';
-            inp.min = '0';
-            inp.placeholder = '0';
-            inp.dataset.catchId = id;
-            inp.dataset.catchKind = kind;
-            if (saved[id] && saved[id][kind] !== undefined) {
-                inp.value = saved[id][kind];
-            }
-            cell.appendChild(lbl);
-            cell.appendChild(inp);
-            block.appendChild(cell);
-        });
+['хилых', 'обычных', 'упитанных'].forEach(kind => {
+    const cell = document.createElement('div');
+    const lbl = document.createElement('label');
+    lbl.textContent = kind;
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    inp.min = '0';
+    inp.placeholder = '0';
+    inp.dataset.catchId = id;
+    inp.dataset.catchKind = kind;
+    if (saved[id] && saved[id][kind] !== undefined) {
+        inp.value = saved[id][kind];
+    }
+    cell.appendChild(lbl);
+    cell.appendChild(inp);
+    block.appendChild(cell);
+});
 
         wrap.appendChild(block);
     });
@@ -695,12 +698,12 @@ if (qs('foodGenerate')) {
                 catchMap[id][kind] = Number(inp.value) || 0;
             });
 
-            const partsStr = ids.length === 0
-                ? '[linkID] [ID] (0 хилых/0 обычных/0 упитанных)'
-                : ids.map(id => {
-                    const c = catchMap[id] || { 'хилых': 0, 'обычных': 0, 'упитанных': 0 };
-                    return `[link${id}] [${id}] (${c['хилых']} хилых/${c['обычных']} обычных/${c['упитанных']} упитанных)`;
-                }).join(', ');
+const partsStr = ids.length === 0
+    ? '[linkID] [ID] (0/0/0)'
+    : ids.map(id => {
+        const c = catchMap[id] || { 'хилых': 0, 'обычных': 0, 'упитанных': 0 };
+        return `[link${id}] [${id}] (${c['хилых']}/${c['обычных']}/${c['упитанных']})`;
+    }).join(', ');
 
             result =
 `[b]${date}[/b]
@@ -712,7 +715,12 @@ if (qs('foodGenerate')) {
 Помощники: ${helpers}`;
         } else if (type === 'solo_hunt') {
             const id = qs('foodSoloId').value.trim() || 'ID';
-            const catchStr = qs('foodSoloCatch').value.trim() || '0 0 0';
+let catchStr = qs('foodSoloCatch').value.trim() || '0 0 0';
+// Если введены три числа через пробел — заменяем на слэши
+const nums = catchStr.split(/\s+/).filter(Boolean);
+if (nums.length === 3 && nums.every(n => !isNaN(n))) {
+    catchStr = nums.join('/');
+}
             const proof = qs('foodSoloProof').value.trim() || '-';
             result =
 `[b]${date}[/b]

@@ -311,7 +311,175 @@
   </div>
 </div>
         <div id="form-squad-turtles" class="stack form-view hidden"><div class="card"><h2>Отряд Черепах<span class="blog-links"> <a href="https://catwar.net/blog0" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog0" target="_blank">catwar.su</a></span></h2></div></div>
-        <div id="form-squad-sharks" class="stack form-view hidden"><div class="card"><h2>Отряд Акул<span class="blog-links"> <a href="https://catwar.net/blog726855" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726855" target="_blank">catwar.su</a></span></h2></div></div>
+        <div id="form-squad-sharks" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Отряд Акул<span class="blog-links"> <a href="https://catwar.net/blog726855" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726855" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div class="full">
+        <label for="sharkType">Вид отчёта</label>
+        <select id="sharkType">
+          <option value="pear">Отчёт о грушевании</option>
+          <option value="butterfly">Рейд на бабочку</option>
+          <option value="pear_change">Оповещение в вестниках: смена груши</option>
+          <option value="pear_add">Оповещение в вестниках: добавление груши</option>
+          <option value="resources">Запрос ресурсов</option>
+        </select>
+      </div>
+
+      <!-- ===== ГРУШЕВАНИЕ ===== -->
+      <div class="full shark-sub-pear">
+        <label for="sharkPearDate">Дата (дд.мм.гг)</label>
+        <input id="sharkPearDate" type="text" class="save-date" placeholder="07.04.26">
+      </div>
+      <div class="full shark-sub-pear">
+        <label for="sharkPearTime">Время (чч:мм - чч:мм)</label>
+        <input id="sharkPearTime" type="text" placeholder="18:00 - 19:00">
+      </div>
+      <div class="shark-sub-pear">
+        <label for="sharkPearRank">Ранг</label>
+        <select id="sharkPearRank">
+          <option value="БГ">БГ</option>
+          <option value="МГ">МГ</option>
+        </select>
+      </div>
+      <div class="shark-sub-pear">
+        <label for="sharkPearId">ID</label>
+        <input id="sharkPearId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full shark-sub-pear">
+        <label for="sharkPearAge">Возраст</label>
+        <select id="sharkPearAge">
+          <option value="взрослый">взрослый</option>
+          <option value="малыш">малыш</option>
+        </select>
+      </div>
+
+      <!-- ===== РЕЙД НА БАБОЧКУ ===== -->
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfDate">Дата (дд.мм.гг)</label>
+        <input id="sharkBfDate" type="text" class="save-date" placeholder="07.04.26">
+      </div>
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfTime">Время (чч:мм - чч:мм)</label>
+        <input id="sharkBfTime" type="text" placeholder="18:00 - 19:00">
+      </div>
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfUnits">Кол-во единиц</label>
+        <input id="sharkBfUnits" type="number" placeholder="0">
+      </div>
+      <div class="shark-sub-butterfly hidden">
+        <label for="sharkBfActivatorId">ID активатора</label>
+        <input id="sharkBfActivatorId" type="text" placeholder="1234567">
+      </div>
+      <div class="shark-sub-butterfly hidden">
+        <label for="sharkBfActivatorAge">Возраст активатора</label>
+        <select id="sharkBfActivatorAge">
+          <option value="взрослый">взрослый</option>
+          <option value="малыш">малыш</option>
+        </select>
+      </div>
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfPartIds">ID участников (через пробел)</label>
+        <input id="sharkBfPartIds" type="text" placeholder="123456 789012">
+      </div>
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfProofBefore">Скриншот ДО (ссылка)</label>
+        <input id="sharkBfProofBefore" type="text" placeholder="ссылка">
+      </div>
+      <div class="full shark-sub-butterfly hidden">
+        <label for="sharkBfProofAfter">Скриншот ПОСЛЕ (ссылка)</label>
+        <input id="sharkBfProofAfter" type="text" placeholder="ссылка">
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          Скриншоты должны содержать и поле игровой, и БУ участника(ов) одновременно.
+        </div>
+      </div>
+
+      <!-- ===== СМЕНА ГРУШИ ===== -->
+      <div class="full shark-sub-pear_change hidden">
+        <label for="sharkChangeRank">Кого меняем</label>
+        <select id="sharkChangeRank">
+          <option value="БГ">БГ</option>
+          <option value="МГ">МГ</option>
+        </select>
+      </div>
+      <div class="shark-sub-pear_change hidden">
+        <label for="sharkChangeFromName">Имя (уходит)</label>
+        <input id="sharkChangeFromName" type="text" placeholder="Имя">
+      </div>
+      <div class="shark-sub-pear_change hidden">
+        <label for="sharkChangeFromId">ID (уходит)</label>
+        <input id="sharkChangeFromId" type="text" placeholder="1234567">
+      </div>
+      <div class="shark-sub-pear_change hidden">
+        <label for="sharkChangeToName">Имя (встаёт)</label>
+        <input id="sharkChangeToName" type="text" placeholder="Имя">
+      </div>
+      <div class="shark-sub-pear_change hidden">
+        <label for="sharkChangeToId">ID (встаёт)</label>
+        <input id="sharkChangeToId" type="text" placeholder="1234567">
+      </div>
+      <div class="shark-sub-pear_change hidden">
+        <label for="sharkChangeTime">Время (чч:мм)</label>
+        <input id="sharkChangeTime" type="text" placeholder="18:35">
+      </div>
+
+      <!-- ===== ДОБАВЛЕНИЕ ГРУШИ ===== -->
+      <div class="shark-sub-pear_add hidden">
+        <label for="sharkAddRank">Кто встаёт</label>
+        <select id="sharkAddRank">
+          <option value="МГ">МГ</option>
+          <option value="БГ">БГ</option>
+        </select>
+      </div>
+      <div class="shark-sub-pear_add hidden">
+        <label for="sharkAddName">Имя</label>
+        <input id="sharkAddName" type="text" placeholder="Имя">
+      </div>
+      <div class="shark-sub-pear_add hidden">
+        <label for="sharkAddId">ID</label>
+        <input id="sharkAddId" type="text" placeholder="1234567">
+      </div>
+
+      <!-- ===== ЗАПРОС РЕСУРСОВ ===== -->
+      <div class="shark-sub-resources hidden">
+        <label for="sharkResId">ID</label>
+        <input id="sharkResId" type="text" class="save-id" placeholder="1234567">
+      </div>
+<div class="shark-sub-resources hidden">
+  <label for="sharkResName">Название ресурса</label>
+  <select id="sharkResName">
+    <option value="Ресурс на сон">ресурс на сон</option>
+    <option value="ресурс на 15 ПУ">ресурс на 15 ПУ</option>
+    <option value="Ресурс на 20 ПУ">ресурс на 20 ПУ</option>
+    <option value="Ресурс на 28 ПУ">ресурс на 28 ПУ</option>
+    <option value="Ресурс на 30 ПУ">ресурс на 30 ПУ</option>
+    <option value="Синее перо">синее перо</option>
+    <option value="Аренда красного пера">аренда красного пера</option>
+    <option value="Аренда чёрного пера">аренда чёрного пера</option>
+  </select>
+</div>
+      <div class="shark-sub-resources hidden">
+        <label for="sharkResCount">Количество (штук)</label>
+        <input id="sharkResCount" type="number" placeholder="1">
+      </div>
+      <div class="full shark-sub-resources hidden">
+        <label for="sharkResProof">Доказательства (ссылка)</label>
+        <input id="sharkResProof" type="text" placeholder="ссылка">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="sharkGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="sharkResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="sharkResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
        <div id="form-squad-seagulls" class="stack form-view hidden">
           <div class="card stack">
             <h2>Отряд Чаек<span class="blog-links"> <a href="https://catwar.net/blog730142" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog730142" target="_blank">catwar.su</a></span></h2>
@@ -989,7 +1157,7 @@
         <label for="foodPatrolHelpers">Помощники (ID через пробел)</label>
         <input id="foodPatrolHelpers" type="text" placeholder="123456 789012">
         <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
-          Помощники: [linkID] [ID] или почерк при отсутствии.
+          Помощники: [linkID] [ID] или прочерк при отсутствии.
         </div>
       </div>
 

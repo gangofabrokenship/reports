@@ -879,16 +879,92 @@ ${fromName} [${fromId}]${buPart}, сменил ${toName} [${toId}] в ${time}`;
         result = `+${rank}, ${name} [${id}]${buPart}`;
         } else if (t === 'resources') {
             const id = qs('sharkResId').value.trim() || 'ID';
-            const name = qs('sharkResName').value.trim() || 'название ресурса';
-            const count = qs('sharkResCount').value.trim() || 'n';
             const proof = qs('sharkResProof').value.trim() || '-';
+            const rows = qs('sharkResList').querySelectorAll('.shark-res-row');
+            const parts = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.shark-res-name').value;
+                const count = row.querySelector('.shark-res-count').value.trim() || '0';
+                if (name) parts.push(`${name} в количестве [b]${count}[/b] штук`);
+            });
+            const listStr = parts.length > 0
+                ? parts.join(', ')
+                : 'название ресурса в количестве [b]0[/b] штук';
             result =
 `[hr][b]Запрос ресурсов[/b]
-Я, [link${id}] [${id}], хочу запросить ${name} в количестве [b]${count}[/b] штук.
+Я, [link${id}] [${id}], хочу запросить ${listStr}.
 [url=${proof}]Доказательства[/url][hr]`;
         }
-        qs('sharkResult').value = result;
-    };
+
+        // ===================== ЗАПРОС РЕСУРСОВ У АКУЛ =====================
+const SHARK_RESOURCES = [
+    'Ресурс на сон',
+    'ресурс на 15 ПУ',
+    'Ресурс на 20 ПУ',
+    'Ресурс на 28 ПУ',
+    'Ресурс на 30 ПУ',
+    'Синее перо',
+    'Аренда красного пера',
+    'Аренда чёрного пера'
+];
+
+function addSharkResourceRow() {
+    const list = qs('sharkResList');
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'shark-res-row';
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '1fr 90px 32px';
+    row.style.gap = '6px';
+    row.style.alignItems = 'center';
+
+    const sel = document.createElement('select');
+    sel.className = 'shark-res-name';
+    SHARK_RESOURCES.forEach(r => {
+        const o = document.createElement('option');
+        o.value = r;
+        o.textContent = r;
+        sel.appendChild(o);
+    });
+
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    inp.min = '0';
+    inp.placeholder = '1';
+    inp.className = 'shark-res-count';
+    inp.style.height = '30px';
+    inp.style.padding = '2px 6px';
+    inp.style.fontSize = '12px';
+    inp.style.boxSizing = 'border-box';
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.textContent = '×';
+    del.title = 'Удалить';
+    del.style.height = '30px';
+    del.style.padding = '0';
+    del.style.cursor = 'pointer';
+    del.style.fontSize = '16px';
+    del.style.lineHeight = '1';
+    del.addEventListener('click', () => {
+        row.remove();
+        // Не даём удалить последнюю строку
+        if (qs('sharkResList').children.length === 0) addSharkResourceRow();
+    });
+
+    row.appendChild(sel);
+    row.appendChild(inp);
+    row.appendChild(del);
+    list.appendChild(row);
+}
+
+if (qs('sharkResAdd')) {
+    qs('sharkResAdd').addEventListener('click', addSharkResourceRow);
+}
+// Стартовая одна строка, когда форма впервые открыта
+if (qs('sharkResList') && qs('sharkResList').children.length === 0) {
+    addSharkResourceRow();
 }
 
 // --- Отряд Альбатросов ---

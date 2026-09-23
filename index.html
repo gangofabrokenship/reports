@@ -45,6 +45,7 @@
             <div class="acc-body">
               <div class="nav-list">
                 <button class="nav-btn" data-form="sphere-guard">Охранная сфера</button>
+                <button class="nav-btn" data-form="sphere-food">Продовольственная сфера</button>
                 <button class="nav-btn" data-form="sphere-heal">Врачевательная сфера</button>
               </div>
             </div>
@@ -937,7 +938,103 @@
     </div>
   </div>
 </div>
-        <div id="form-sphere-food" class="stack form-view hidden"><div class="card"><h2>Продовольственная сфера<span class="blog-links"> <a href="https://catwar.net/blog890784" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog890784" target="_blank">catwar.su</a></span></h2></div></div>
+        <div id="form-sphere-food" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Продовольственная сфера<span class="blog-links"> <a href="https://catwar.net/blog890784" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog890784" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div class="full">
+        <label for="foodType">Вид отчёта</label>
+        <select id="foodType">
+          <option value="hunt_patrol">Охотничий патруль</option>
+          <option value="solo_hunt">Одиночная охота</option>
+          <option value="galley">Чистка камбуза</option>
+        </select>
+      </div>
+
+      <!-- ОХОТНИЧИЙ ПАТРУЛЬ -->
+      <div class="full food-sub-hunt_patrol">
+        <label for="foodPatrolTime">Время сбора (МСК)</label>
+        <select id="foodPatrolTime">
+          <option value="02:00">02:00</option>
+          <option value="06:00">06:00</option>
+          <option value="10:00">10:00</option>
+          <option value="14:00">14:00</option>
+          <option value="18:00">18:00</option>
+          <option value="22:00">22:00</option>
+        </select>
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          В пункт «время сбора» должна стоять время из расписания (02:00, 06:00, 10:00, 14:00, 18:00 и 22:00), даже если сбор проводился позже.
+        </div>
+      </div>
+      <div class="food-sub-hunt_patrol">
+        <label for="foodPatrolCollector">Собирающий (ID)</label>
+        <input id="foodPatrolCollector" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="food-sub-hunt_patrol">
+        <label for="foodPatrolLead">Ведущий (ID)</label>
+        <input id="foodPatrolLead" type="text" placeholder="1234567">
+      </div>
+      <div class="full food-sub-hunt_patrol">
+        <label for="foodPatrolParts">Участники (ID через пробел)</label>
+        <input id="foodPatrolParts" type="text" placeholder="123456 789012">
+      </div>
+      <div class="full food-sub-hunt_patrol">
+        <label for="foodPatrolHelpers">Помощники (ID через пробел)</label>
+        <input id="foodPatrolHelpers" type="text" placeholder="123456 789012">
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          Помощники: [linkID] [ID] или почерк при отсутствии.
+        </div>
+      </div>
+
+      <!-- ОДИНОЧНАЯ ОХОТА -->
+      <div class="full food-sub-solo_hunt hidden">
+        <label for="foodSoloId">ID охотника</label>
+        <input id="foodSoloId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full food-sub-solo_hunt hidden">
+        <label for="foodSoloCatch">Улов (хилые/обычные/упитанные)</label>
+        <input id="foodSoloCatch" type="text" placeholder="1 2 3">
+      </div>
+      <div class="full food-sub-solo_hunt hidden">
+        <label for="foodSoloProof">Скриншот пойманной дичи</label>
+        <input id="foodSoloProof" type="text" placeholder="ссылка">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          На скриншоте должна быть видна вся пойманная дичь, персонаж и имя поймавшего. Дичь может находиться во рту или на соседних клетках.
+        </div>
+      </div>
+
+      <!-- ЧИСТКА КАМБУЗА -->
+      <div class="full food-sub-galley hidden">
+        <label for="foodGalleyId">ID</label>
+        <input id="foodGalleyId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full food-sub-galley hidden">
+        <label for="foodGalleyCount">Кол-во уничтоженной падали</label>
+        <input id="foodGalleyCount" type="number" placeholder="0">
+      </div>
+      <div class="full food-sub-galley hidden">
+        <label for="foodGalleyProof">Скриншот истории</label>
+        <input id="foodGalleyProof" type="text" placeholder="ссылка">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          На скриншоте должна быть видна история смешивания ядовитых предметов, желательно выделить действие «смешал» через поиск на странице.
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="foodGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="foodResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="foodResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
         <div id="form-sphere-heal" class="stack form-view hidden">
 
   <style>

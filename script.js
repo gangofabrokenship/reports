@@ -704,7 +704,6 @@ function rebuildFoodPatrolCatchFields() {
         const title = document.createElement('div');
         title.style.gridColumn = '1 / -1';
         title.style.fontSize = '10px';
-        title.style.fontWeight = 'bold';
         title.style.opacity = '0.75';
         title.style.marginBottom = '2px';
         title.textContent = `Улов участника [${id}]`;

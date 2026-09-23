@@ -700,7 +700,6 @@ function rebuildFoodPatrolCatchFields() {
         block.style.marginTop = '6px';
         block.style.padding = '6px 8px';
         block.style.border = '1px dashed rgba(0,0,0,0.15)';
-        block.style.borderRadius = '4px';
 
         const title = document.createElement('div');
         title.style.gridColumn = '1 / -1';

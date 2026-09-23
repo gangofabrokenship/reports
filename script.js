@@ -794,16 +794,18 @@ ${dateVal}, ${timeRange} (${units} единиц)
 [Активатор] [link${actId}] [${actId}] (${actAge})
 [Участники] ${parts}
 [Доказательства] скриншоты до/после (содержащие и поле игровой, и БУ участника(ов) одновременно): [url=${proofBefore}]до[/url], [url=${proofAfter}]после[/url]`;
-        } else if (t === 'pear_change') {
-            const rank = qs('sharkChangeRank').value;
-            const fromName = qs('sharkChangeFromName').value.trim() || 'ИМЯ';
-            const fromId = qs('sharkChangeFromId').value.trim() || 'ID';
-            const toName = qs('sharkChangeToName').value.trim() || 'ИМЯ';
-            const toId = qs('sharkChangeToId').value.trim() || 'ID';
-            const time = qs('sharkChangeTime').value.trim() || 'чч:мм';
-            result =
+              } else if (t === 'pear_change') {
+        const rank = qs('sharkChangeRank').value;
+        const fromName = qs('sharkChangeFromName').value.trim() || 'ИМЯ';
+        const fromId = qs('sharkChangeFromId').value.trim() || 'ID';
+        const toName = qs('sharkChangeToName').value.trim() || 'ИМЯ';
+        const toId = qs('sharkChangeToId').value.trim() || 'ID';
+        const time = qs('sharkChangeTime').value.trim() || 'чч:мм';
+        const buFrom = (qs('sharkChangeFromBu')?.value || '').trim();
+        const buPart = buFrom !== '' ? ` (${buFrom})` : '';
+        result =
 `Смена ${rank}
-${fromName} [${fromId}] (БУ), сменил ${toName} [${toId}] в ${time}`;
+${fromName} [${fromId}]${buPart}, сменил ${toName} [${toId}] в ${time}`;
         } else if (t === 'pear_add') {
             const rank = qs('sharkAddRank').value;
             const name = qs('sharkAddName').value.trim() || 'ИМЯ';

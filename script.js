@@ -66,14 +66,14 @@ const toddlerLocs = ['Верхняя палуба', 'Капитанский мо
 
 // ====== СПИСОК РЕСУРСОВ ДЛЯ АКУЛ ======
 const SHARK_RESOURCES = [
-    'Ресурс на сон',
+    'ресурс на сон',
     'ресурс на 15 ПУ',
-    'Ресурс на 20 ПУ',
-    'Ресурс на 28 ПУ',
-    'Ресурс на 30 ПУ',
-    'Синее перо',
-    'Аренда красного пера',
-    'Аренда чёрного пера'
+    'ресурс на 20 ПУ',
+    'ресурс на 28 ПУ',
+    'ресурс на 30 ПУ',
+    'синее перо',
+    'аренда красного пера',
+    'аренда чёрного пера'
 ];
 
 // ===================== БАЗОВЫЕ ХЕЛПЕРЫ =====================
@@ -852,31 +852,37 @@ if (qs('sharkGenerate')) {
         };
 
         if (t === 'pear') {
-            const rank = qs('sharkPearRank').value;
-            const id = qs('sharkPearId').value.trim() || 'ID';
-            const dateVal = qs('sharkPearDate').value.trim() || date;
-            const timeRange = qs('sharkPearTime').value.trim() || 'чч:мм - чч:мм';
-            const dur = calculateTimeDifference(timeRange).formatted;
-            const age = qs('sharkPearAge').value;
-            result =
+           const rank = qs('sharkPearRank').value;
+const id = qs('sharkPearId').value.trim() || 'ID';
+const dateVal = qs('sharkPearDate').value.trim() || date;
+const timeRange = qs('sharkPearTime').value.trim() || 'чч:мм - чч:мм';
+const diff = calculateTimeDifference(timeRange);
+// Формат "n часов m минут"
+const h = Math.floor(diff.minutes / 60);
+const m = diff.minutes % 60;
+let durText = '';
+if (h > 0 && m > 0) durText = `${h} ${h === 1 ? 'час' : (h < 5 ? 'часа' : 'часов')} ${m} ${m === 1 ? 'минута' : (m < 5 ? 'минуты' : 'минут')}`;
+else if (h > 0) durText = `${h} ${h === 1 ? 'час' : (h < 5 ? 'часа' : 'часов')}`;
+else if (m > 0) durText = `${m} ${m === 1 ? 'минута' : (m < 5 ? 'минуты' : 'минут')}`;
+else durText = '0 минут';
+const age = qs('sharkPearAge').value;
+result =
 `[b]Грушевание[/b]
-${dateVal}, ${timeRange} (${dur})
-[${rank}] [link${id}] [${id}] (${age})`;
+${dateVal}, ${timeRange} (${durText})
+[b]${rank}:[/b] [link${id}] [${id}] (${age})`;
         } else if (t === 'butterfly') {
             const dateVal = qs('sharkBfDate').value.trim() || date;
-            const timeRange = qs('sharkBfTime').value.trim() || 'чч:мм - чч:мм';
-            const units = qs('sharkBfUnits').value.trim() || '0';
-            const actId = qs('sharkBfActivatorId').value.trim() || 'ID';
-            const actAge = qs('sharkBfActivatorAge').value;
-            const parts = fmtIds(qs('sharkBfPartIds').value);
-            const proofBefore = qs('sharkBfProofBefore').value.trim() || '-';
-            const proofAfter = qs('sharkBfProofAfter').value.trim() || '-';
-            result =
+const timeRange = qs('sharkBfTime').value.trim() || 'чч:мм - чч:мм';
+const units = qs('sharkBfUnits').value.trim() || '0';
+const actId = qs('sharkBfActivatorId').value.trim() || 'ID';
+const actAge = qs('sharkBfActivatorAge').value;
+const parts = fmtIds(qs('sharkBfPartIds').value);
+result =
 `[b]Активация бабочки[/b]
-${dateVal}, ${timeRange} (${units} единиц)
-[Активатор] [link${actId}] [${actId}] (${actAge})
-[Участники] ${parts}
-[Доказательства] скриншоты до/после (содержащие и поле игровой, и БУ участника(ов) одновременно): [url=${proofBefore}]до[/url], [url=${proofAfter}]после[/url]`;
+${dateVal}, ${timeRange} (+ ${units} единиц)
+[b]Активатор:[/b] [link${actId}] [${actId}]  (${actAge})
+[b]Участники:[/b] ${parts}
+[b]Доказательства:[/b] скриншоты до\\после (содержащие и поле игровой, и БУ участника(ов) одновременно)`;
         } else if (t === 'pear_change') {
             const rank = qs('sharkChangeRank').value;
             const fromName = qs('sharkChangeFromName').value.trim() || 'ИМЯ';

@@ -590,6 +590,74 @@ if (qs('guardMode')) qs('guardMode').onchange = updateGuardForm;
 if (qs('watchSubMode')) qs('watchSubMode').onchange = updateWatchOptions;
 if (qs('guardMode')) updateGuardForm();
 
+// ===================== ПРОДОВОЛЬСТВЕННАЯ СФЕРА =====================
+function updateFoodForm() {
+    const type = qs('foodType').value;
+    document.querySelectorAll('.food-sub-hunt_patrol').forEach(el =>
+        el.classList.toggle('hidden', type !== 'hunt_patrol'));
+    document.querySelectorAll('.food-sub-solo_hunt').forEach(el =>
+        el.classList.toggle('hidden', type !== 'solo_hunt'));
+    document.querySelectorAll('.food-sub-galley').forEach(el =>
+        el.classList.toggle('hidden', type !== 'galley'));
+}
+if (qs('foodType')) {
+    qs('foodType').onchange = updateFoodForm;
+    updateFoodForm();
+}
+
+if (qs('foodGenerate')) {
+    qs('foodGenerate').onclick = () => {
+        const type = qs('foodType').value;
+        const date = getMoscowDate();
+        let result = '';
+
+        const fmtIds = (raw) => {
+            if (!raw || !raw.trim()) return '[linkID] [ID]';
+            return raw.trim().split(/\s+/).filter(Boolean)
+                .map(id => `[link${id}] [${id}]`).join(', ');
+        };
+
+        if (type === 'hunt_patrol') {
+            const collector = qs('foodPatrolCollector').value.trim() || 'ID';
+            const lead = qs('foodPatrolLead').value.trim() || 'ID';
+            const parts = fmtIds(qs('foodPatrolParts').value);
+            const helpers = fmtIds(qs('foodPatrolHelpers').value);
+            result =
+`[b]${date}[/b]
+[b]Охотничий патруль.[/b]
+Время сбора: ${qs('foodPatrolTime').value}
+Собирающий: [link${collector}] [${collector}]
+Ведущий: [link${lead}] [${lead}]
+Участники: ${parts}
+Помощники: ${helpers}`;
+        } else if (type === 'solo_hunt') {
+            const id = qs('foodSoloId').value.trim() || 'ID';
+            let catchStr = qs('foodSoloCatch').value.trim() || '-';
+            const nums = catchStr.split(/\s+/);
+            if (nums.length === 3 && nums.every(n => !isNaN(n))) {
+                catchStr = `${nums[0]} ${nums[1]} ${nums[2]}`;
+            }
+            const proof = qs('foodSoloProof').value.trim() || '-';
+            result =
+`[b]${date}[/b]
+[b]Одиночная охота.[/b]
+[link${id}] [${id}] (${catchStr})
+[ [url=${proof}]скриншот пойманной дичи[/url] ]`;
+        } else if (type === 'galley') {
+            const id = qs('foodGalleyId').value.trim() || 'ID';
+            const count = qs('foodGalleyCount').value.trim() || '0';
+            const proof = qs('foodGalleyProof').value.trim() || '-';
+            result =
+`[b]${date}[/b]
+[b]Чистка Камбуза.[/b]
+[link${id}] [${id}]
+Кол-во уничтоженной падали: ${count}.
+[ [url=${proof}]скриншот истории[/url] ]`;
+        }
+        qs('foodResult').value = result;
+    };
+}
+
 // --- Отряд Альбатросов ---
 if (qs('albCategory')) qs('albCategory').onchange = () => {
   const c = qs('albCategory').value;

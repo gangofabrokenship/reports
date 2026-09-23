@@ -574,39 +574,73 @@
         </div>
 
         <div id="form-squad-octopus" class="stack form-view hidden">
-          <div class="card stack">
-            <h2>Морская вылазка<span class="blog-links"> <a href="https://catwar.net/blog726849" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726849" target="_blank">catwar.su</a></span></h2>
+  <div class="card stack">
+    <h2>Отряд Осьминогов (Навигаторы)<span class="blog-links"> <a href="https://catwar.net/blog726849" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726849" target="_blank">catwar.su</a></span></h2>
 
-            <div class="grid">
-              <div>
-                <label for="octoDate">Дата проведения</label>
-                <input id="octoDate" type="text" placeholder="дд.мм.гг">
-              </div>
-              <div>
-                <label for="octoNavId">ID Навигатора</label>
-                <input id="octoNavId" type="text" class="save-id" placeholder="1234567">
-              </div>
-              <div class="full">
-                <label for="octoPartIds">ID Участников (через пробел)</label>
-                <input id="octoPartIds" type="text" placeholder="123456 789012 345678">
-              </div>
-              <div class="full">
-                <label for="octoProofs">Скриншоты</label>
-                <input id="octoProofs" type="text" placeholder="ссылка1 ссылка2 ссылка3">
-                <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
-              </div>
-            </div>
-            <div class="actions">
-              <button class="primary" id="octoGenerate">Составить отчёт</button>
-            </div>
-          </div>
-          <div class="card">
-            <textarea id="octoResult" class="output" readonly style="min-height: 100px;"></textarea>
-            <div class="actions">
-              <button class="secondary" data-copy="octoResult">Скопировать отчёт</button>
-            </div>
-          </div>
-        </div>
+    <div class="grid">
+      <div class="full">
+        <label for="octoType">Вид отчёта</label>
+        <select id="octoType">
+          <option value="trip">Морская вылазка</option>
+          <option value="clean_lager_blog">Чистка лагерных локаций (блог)</option>
+          <option value="clean_lager_vk">Чистка лагерных локаций (ВК)</option>
+          <option value="clean_offlager_blog">Чистка внелагерных локаций (блог)</option>
+          <option value="clean_offlager_vk">Чистка внелагерных локаций (ВК)</option>
+          <option value="sort_blog">Сортировка (блог)</option>
+          <option value="sort_vk">Сортировка (ВК)</option>
+        </select>
+      </div>
+
+      <!-- ===== МОРСКАЯ ВЫЛАЗКА ===== -->
+      <div class="octo-sub-trip">
+        <label for="octoDate">Дата проведения</label>
+        <input id="octoDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="octo-sub-trip">
+        <label for="octoNavId">ID Навигатора</label>
+        <input id="octoNavId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full octo-sub-trip">
+        <label for="octoPartIds">ID Участников (через пробел)</label>
+        <input id="octoPartIds" type="text" placeholder="123456 789012 345678">
+      </div>
+      <div class="full octo-sub-trip">
+        <label for="octoProofs">Скриншоты</label>
+        <input id="octoProofs" type="text" placeholder="ссылка1 ссылка2 ссылка3">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+      </div>
+
+      <!-- ===== ЧИСТКА / СОРТИРОВКА ===== -->
+      <div class="octo-sub-clean">
+        <label for="octoDate2">Дата (дд.мм.гг)</label>
+        <input id="octoDate2" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="octo-sub-clean">
+        <label for="octoMyId">ID осьминого</label>
+        <input id="octoMyId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full octo-sub-clean">
+        <label for="octoCatCount">Количество убранных/отсортированных котов</label>
+        <input id="octoCatCount" type="number" min="0" placeholder="0">
+      </div>
+      <div class="full octo-sub-clean octo-sub-blog">
+        <label for="octoProof">Скриншот истории (ссылка)</label>
+        <input id="octoProof" type="text" placeholder="ссылка">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="octoGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="octoResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="octoResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
         <div id="form-squad-flyingfish" class="stack form-view hidden"><div class="card"><h2>Отряд Летучих рыб<span class="blog-links"> <a href="https://catwar.net/blog726853" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726853" target="_blank">catwar.su</a></span></h2></div></div>
 <div id="form-squad-albatross" class="stack form-view hidden">
   <div class="card stack">

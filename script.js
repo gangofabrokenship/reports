@@ -956,14 +956,26 @@ function addSharkResourceRow() {
     inp.style.boxSizing = 'border-box';
 
     const del = document.createElement('button');
-    del.type = 'button';
-    del.textContent = '×';
-    del.title = 'Удалить';
-    del.style.height = '30px';
-    del.style.padding = '0';
-    del.style.cursor = 'pointer';
-    del.style.fontSize = '16px';
-    del.style.lineHeight = '1';
+del.type = 'button';
+del.textContent = '×';
+del.title = 'Удалить';
+del.style.height = '30px';
+del.style.width = '32px';
+del.style.padding = '0';
+del.style.cursor = 'pointer';
+del.style.fontSize = '16px';
+del.style.lineHeight = '1';
+del.style.background = 'var(--bg)';
+del.style.color = 'var(--muted)';
+del.style.border = '1px solid var(--line)';
+    del.addEventListener('mouseenter', () => {
+    del.style.background = 'var(--accent-soft)';
+    del.style.color = 'var(--text)';
+});
+del.addEventListener('mouseleave', () => {
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+});
     del.addEventListener('click', () => {
         row.remove();
         if (qs('sharkResList').children.length === 0) addSharkResourceRow();

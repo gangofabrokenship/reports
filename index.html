@@ -964,7 +964,6 @@
           <option value="22:00">22:00</option>
         </select>
         <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
-          В пункт «время сбора» должна стоять время из расписания (02:00, 06:00, 10:00, 14:00, 18:00 и 22:00), даже если сбор проводился позже.
         </div>
       </div>
       <div class="food-sub-hunt_patrol">
@@ -978,7 +977,14 @@
       <div class="full food-sub-hunt_patrol">
         <label for="foodPatrolParts">Участники (ID через пробел)</label>
         <input id="foodPatrolParts" type="text" placeholder="123456 789012">
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 3px; line-height: 1.4;">
+          После ввода ID ниже появятся поля улова: <b>хилые / обычные / упитанные</b>.
+          Если участник ничего не поймал — оставьте нули.
+        </div>
       </div>
+
+<!-- Сюда JS будет автоматически добавлять поля улова -->
+<div class="full food-sub-hunt_patrol" id="foodPatrolCatchWrap"></div>
       <div class="full food-sub-hunt_patrol">
         <label for="foodPatrolHelpers">Помощники (ID через пробел)</label>
         <input id="foodPatrolHelpers" type="text" placeholder="123456 789012">

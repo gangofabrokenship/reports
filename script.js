@@ -743,6 +743,86 @@ if (nums.length === 3 && nums.every(n => !isNaN(n))) {
     };
 }
 
+// ===================== ОТРЯД АКУЛ =====================
+function updateSharkForm() {
+    const t = qs('sharkType').value;
+    ['pear', 'butterfly', 'pear_change', 'pear_add', 'resources'].forEach(key => {
+        document.querySelectorAll(`.shark-sub-${key}`).forEach(el =>
+            el.classList.toggle('hidden', t !== key));
+    });
+}
+if (qs('sharkType')) {
+    qs('sharkType').onchange = updateSharkForm;
+    updateSharkForm();
+}
+
+if (qs('sharkGenerate')) {
+    qs('sharkGenerate').onclick = () => {
+        const t = qs('sharkType').value;
+        const date = getMoscowDate();
+        let result = '';
+
+        const fmtIds = (raw) => {
+            if (!raw || !raw.trim()) return '[linkID] [ID]';
+            return raw.trim().split(/\s+/).filter(Boolean)
+                .map(id => `[link${id}] [${id}]`).join(', ');
+        };
+
+        if (t === 'pear') {
+            const rank = qs('sharkPearRank').value;
+            const id = qs('sharkPearId').value.trim() || 'ID';
+            const dateVal = qs('sharkPearDate').value.trim() || date;
+            const timeRange = qs('sharkPearTime').value.trim() || 'чч:мм - чч:мм';
+            const dur = calculateTimeDifference(timeRange).formatted;
+            const age = qs('sharkPearAge').value;
+            result =
+`[b]Грушевание[/b]
+${dateVal}, ${timeRange} (${dur})
+[${rank}] [link${id}] [${id}] (${age})`;
+        } else if (t === 'butterfly') {
+            const dateVal = qs('sharkBfDate').value.trim() || date;
+            const timeRange = qs('sharkBfTime').value.trim() || 'чч:мм - чч:мм';
+            const units = qs('sharkBfUnits').value.trim() || '0';
+            const actId = qs('sharkBfActivatorId').value.trim() || 'ID';
+            const actAge = qs('sharkBfActivatorAge').value;
+            const parts = fmtIds(qs('sharkBfPartIds').value);
+            const proofBefore = qs('sharkBfProofBefore').value.trim() || '-';
+            const proofAfter = qs('sharkBfProofAfter').value.trim() || '-';
+            result =
+`[b]Активация бабочки[/b]
+${dateVal}, ${timeRange} (${units} единиц)
+[Активатор] [link${actId}] [${actId}] (${actAge})
+[Участники] ${parts}
+[Доказательства] скриншоты до/после (содержащие и поле игровой, и БУ участника(ов) одновременно): [url=${proofBefore}]до[/url], [url=${proofAfter}]после[/url]`;
+        } else if (t === 'pear_change') {
+            const rank = qs('sharkChangeRank').value;
+            const fromName = qs('sharkChangeFromName').value.trim() || 'ИМЯ';
+            const fromId = qs('sharkChangeFromId').value.trim() || 'ID';
+            const toName = qs('sharkChangeToName').value.trim() || 'ИМЯ';
+            const toId = qs('sharkChangeToId').value.trim() || 'ID';
+            const time = qs('sharkChangeTime').value.trim() || 'чч:мм';
+            result =
+`Смена ${rank}
+${fromName} [${fromId}] (БУ), сменил ${toName} [${toId}] в ${time}`;
+        } else if (t === 'pear_add') {
+            const rank = qs('sharkAddRank').value;
+            const name = qs('sharkAddName').value.trim() || 'ИМЯ';
+            const id = qs('sharkAddId').value.trim() || 'ID';
+            result = `+${rank}, ${name} [${id}] (БУ)`;
+        } else if (t === 'resources') {
+            const id = qs('sharkResId').value.trim() || 'ID';
+            const name = qs('sharkResName').value.trim() || 'название ресурса';
+            const count = qs('sharkResCount').value.trim() || 'n';
+            const proof = qs('sharkResProof').value.trim() || '-';
+            result =
+`[hr][b]Запрос ресурсов[/b]
+Я, [link${id}] [${id}], хочу запросить ${name} в количестве [b]${count}[/b] штук.
+[url=${proof}]Доказательства[/url][hr]`;
+        }
+        qs('sharkResult').value = result;
+    };
+}
+
 // --- Отряд Альбатросов ---
 if (qs('albCategory')) qs('albCategory').onchange = () => {
   const c = qs('albCategory').value;

@@ -22,14 +22,17 @@
             <button class="acc-head" type="button" data-form="main-blog">ГЛАВНЫЙ БЛОГ</button>
           </div>
 
-     <div class="acc-item">
+          <div class="acc-item">
             <button class="acc-head" type="button" data-form="awards-blog">БЛОГ НАГРАД</button>
           </div>
+          
           <div class="acc-item">
-  <button class="acc-head" type="button" data-form="activity-blog">БЛОГ АКТИВНОСТИ</button>
-</div>
+            <button class="acc-head" type="button" data-form="activity-blog">БЛОГ АКТИВНОСТИ</button>
+          </div>
 
-
+          <div class="acc-item">
+            <button class="acc-head" type="button" data-form="pirate-code">ПИРАТСКИЙ КОДЕКС</button>
+          </div>
   
           <div class="acc-item">
             <button class="acc-head" type="button">ОТРЯДНЫЕ <span>▾</span></button>
@@ -208,7 +211,47 @@
             </div>
           </div>
         </div>
-        <div id="form-pirate-code" class="stack form-view hidden"><div class="card"><h2>Пиратский кодекс<span class="blog-links"> <a href="https://catwar.net/blog752421" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog752421" target="_blank">catwar.su</a></span></h2></div></div>
+        <div id="form-pirate-code" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Пиратский кодекс<span class="blog-links"> <a href="https://catwar.net/blog752421" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog752421" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div>
+        <label for="codexDate">Дата (дд.мм.гггг)</label>
+        <input id="codexDate" type="text" class="save-date" placeholder="дд.мм.гггг">
+      </div>
+      <div>
+        <label for="codexViolatorId">ID нарушителя</label>
+        <input id="codexViolatorId" type="text" placeholder="1234567">
+      </div>
+
+      <div class="full">
+        <label for="codexRule">Правило</label>
+        <select id="codexRule"></select>
+      </div>
+
+      <div class="full">
+        <label for="codexPoint">Пункт (подставляется автоматически)</label>
+        <textarea id="codexPoint" placeholder="—" readonly style="min-height: 80px; opacity: 0.85;"></textarea>
+      </div>
+
+      <div class="full">
+        <label for="codexProof">Ссылка на скриншот</label>
+        <input id="codexProof" type="text" placeholder="ссылка">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="codexGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="codexResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="codexResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
         <div id="form-shelter-blog" class="stack form-view hidden"><div class="card"><h2>Блог притулья<span class="blog-links"> <a href="https://catwar.net/blog1079063" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog1079063" target="_blank">catwar.su</a></span></h2></div></div>
         <div id="form-activity-blog" class="stack form-view hidden">
   <div class="card stack">

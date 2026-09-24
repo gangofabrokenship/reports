@@ -78,7 +78,7 @@ const SHARK_RESOURCES = [
 
 // ===================== БАЗОВЫЕ ХЕЛПЕРЫ =====================
 const qs = (id) => document.getElementById(id);
-const val = (id, fallback = '-') => {
+const val = (id, fallback = '—') => {
     const el = qs(id);
     const v = el ? el.value.trim() : '';
     return v || fallback;
@@ -358,7 +358,7 @@ async function loadMentorsFromTable() {
             .filter(m => m && m.name && m.status && m.status.toLowerCase().includes('открыт'))
             .map(m => m.name.trim());
         if (!mentors.length) { setMentorSelectState('Нет открытых наставников'); return; }
-        fillSelect(select, ['-', ...mentors]);
+        fillSelect(select, ['—', ...mentors]);
     } catch (error) {
         setMentorSelectState('Ошибка загрузки таблицы');
     }
@@ -382,9 +382,9 @@ if (qs('rankGenerate')) {
         const cfg = rankTypes[qs('rankType').value];
         const id = qs('rankId').value.trim() || 'ID';
         const baseNameInput = qs('rankBaseName');
-        const baseName = (baseNameInput && baseNameInput.value.trim()) ? baseNameInput.value.trim() : '-';
+        const baseName = (baseNameInput && baseNameInput.value.trim()) ? baseNameInput.value.trim() : '—';
         const nameInput = qs('rankPirateName');
-        const pirateName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : '-';
+        const pirateName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : '—';
         const date = qs('rankDate').value;
         const proofs = makeProofs(qs('rankProof').value);
         const speech = qs('rankSpeech').value;
@@ -485,7 +485,7 @@ if (qs('awardsGenerate')) {
         const item = qs('awardsItem').value;
         const proofs = makeProofs(qs('awardsProofs').value);
         const varEl = qs('awardsVariant');
-        const extra = varEl ? varEl.value : '-';
+        const extra = varEl ? varEl.value : '—';
         let text = "";
         if (mode === 'medal') text = `[b]Запрос медали[/b]\nЯ, [cat${id}] [${id}], ${dol} шайки, выполнил(а) требования на медаль «${item}».\n${proofs}`;
         if (mode === 'trophy') text = `[b]Запрос трофея[/b]\nЯ, [cat${id}] [${id}], ${dol} шайки, выполнил(а) требования на трофей «${item}».\n${proofs}`;
@@ -499,7 +499,7 @@ if (qs('eskDate')) qs('eskDate').value = getMoscowDate();
 if (qs('eskGenerate')) {
     qs('eskGenerate').onclick = () => {
         const type = qs('eskType').value;
-        const time = qs('eskTime').value.trim() || 'чч:мм - чч:мм';
+        const time = qs('eskTime').value.trim() || 'чч:мм — чч:мм';
         const id = qs('eskId').value.trim() || 'ID';
         const isLead = qs('eskIsLead').checked;
         const date = qs('eskDate').value.trim() || getMoscowDate();
@@ -767,9 +767,13 @@ if (qs('foodGenerate')) {
         };
 
         if (type === 'hunt_patrol') {
-            const collector = qs('foodPatrolCollector').value.trim() || 'ID';
-            const lead = qs('foodPatrolLead').value.trim() || 'ID';
-            const helpers = fmtIds(qs('foodPatrolHelpers').value);
+const collector = qs('foodPatrolCollector').value.trim() || 'ID';
+const lead = qs('foodPatrolLead').value.trim() || 'ID';
+
+const helpersRaw = qs('foodPatrolHelpers').value.trim();
+const helpers = helpersRaw
+    ? helpersRaw.split(/\s+/).filter(Boolean).map(id => `[link${id}] [${id}]`).join(', ')
+    : '—';
 
             const ids = qs('foodPatrolParts').value.trim().split(/\s+/).filter(Boolean);
             const catchMap = {};
@@ -802,7 +806,7 @@ if (qs('foodGenerate')) {
             if (nums.length === 3 && nums.every(n => !isNaN(n))) {
                 catchStr = nums.join('/');
             }
-            const proof = qs('foodSoloProof').value.trim() || '-';
+            const proof = qs('foodSoloProof').value.trim() || '—';
             result =
 `[b]${date}[/b]
 [b]Одиночная охота.[/b]
@@ -811,7 +815,7 @@ if (qs('foodGenerate')) {
         } else if (type === 'galley') {
             const id = qs('foodGalleyId').value.trim() || 'ID';
             const count = qs('foodGalleyCount').value.trim() || '0';
-            const proof = qs('foodGalleyProof').value.trim() || '-';
+            const proof = qs('foodGalleyProof').value.trim() || '—';
             result =
 `[b]${date}[/b]
 [b]Чистка Камбуза.[/b]
@@ -853,7 +857,7 @@ if (qs('sharkGenerate')) {
            const rank = qs('sharkPearRank').value;
 const id = qs('sharkPearId').value.trim() || 'ID';
 const dateVal = qs('sharkPearDate').value.trim() || date;
-const timeRange = qs('sharkPearTime').value.trim() || 'чч:мм - чч:мм';
+const timeRange = qs('sharkPearTime').value.trim() || 'чч:мм — чч:мм';
 const diff = calculateTimeDifference(timeRange);
 // Формат "n часов m минут"
 const h = Math.floor(diff.minutes / 60);
@@ -870,7 +874,7 @@ ${dateVal}, ${timeRange} (${durText})
 [b]${rank}:[/b] [link${id}] [${id}] (${age})`;
         } else if (t === 'butterfly') {
             const dateVal = qs('sharkBfDate').value.trim() || date;
-const timeRange = qs('sharkBfTime').value.trim() || 'чч:мм - чч:мм';
+const timeRange = qs('sharkBfTime').value.trim() || 'чч:мм — чч:мм';
 const units = qs('sharkBfUnits').value.trim() || '0';
 const actId = qs('sharkBfActivatorId').value.trim() || 'ID';
 const actAge = qs('sharkBfActivatorAge').value;
@@ -903,7 +907,7 @@ ${fromName} [${fromId}]${buPart}, сменил ${toName} [${toId}] в ${time}`;
             result = `+${rank}, ${name} [${id}]${buPart}`;
         } else if (t === 'resources') {
             const id = qs('sharkResId').value.trim() || 'ID';
-            const proof = qs('sharkResProof').value.trim() || '-';
+            const proof = qs('sharkResProof').value.trim() || '—';
             const rows = qs('sharkResList').querySelectorAll('.shark-res-row');
             const parts = [];
             rows.forEach(row => {
@@ -1020,12 +1024,12 @@ if (qs('albGenerate')) qs('albGenerate').onclick = () => {
     let res = '';
 
     const formatIdsAlb = (raw) => {
-        if (!raw || !raw.trim() || raw.trim() === '-') return '-';
+        if (!raw || !raw.trim() || raw.trim() === '—') return '—';
         return raw.trim().split(/[\s,]+/).filter(Boolean).map(id => `[link${id}] [${id}]`).join(', ');
     };
     const valAlb = (id) => {
         const el = qs(id);
-        return (el && el.value.trim()) ? el.value.trim() : '-';
+        return (el && el.value.trim()) ? el.value.trim() : '—';
     };
 
     if (c === 'congrat_report') {
@@ -1049,15 +1053,15 @@ if (qs('albGenerate')) qs('albGenerate').onclick = () => {
 [b]Дата рождения:[/b] ${qs('albBirthDate').value.trim() || 'дд.мм.'}
 
 [b]1. Предпочтения:[/b]
-${qs('albPrefs').value.trim() || '-'}
+${qs('albPrefs').value.trim() || '—'}
 [b]2. Информация об основном персонаже:[/b]
-${qs('albMainChar').value.trim() || '-'}
+${qs('albMainChar').value.trim() || '—'}
 [b]3. Информация о дополнительных персонажах:[/b]
-${qs('albExtraChars').value.trim() || '-'}
+${qs('albExtraChars').value.trim() || '—'}
 [b]4. Ваши друзья:[/b]
-${qs('albFriends').value.trim() || '-'}
+${qs('albFriends').value.trim() || '—'}
 [b]5. Как вас представлять друзьям:[/b]
-${qs('albHowIntroduce').value.trim() || '-'}`;
+${qs('albHowIntroduce').value.trim() || '—'}`;
     } else if (c === 'anketa_noblog') {
         const id = valAlb('albNoBlogId');
         res = `[b]День рождения[/b]
@@ -1067,7 +1071,7 @@ ${qs('albHowIntroduce').value.trim() || '-'}`;
         const id = valAlb('albEditId');
         const sec = qs('albEditSection').value.trim() || 'название раздела';
         res = `Я, [link${id}] [${id}], желаю отредактировать информацию в разделе ${sec}. [b]Новый текст:[/b]
-${qs('albEditText').value.trim() || '-'}`;
+${qs('albEditText').value.trim() || '—'}`;
     } else if (c === 'vk_booking') {
         const r = qs('albBookRole').value;
         const name = valAlb('albBookName');
@@ -1093,15 +1097,15 @@ ${qs('albEditText').value.trim() || '-'}`;
         const tId = valAlb('albDoneTargetId');
         const target = `${tName} [${tId}]`;
         if (r.startsWith('коллаб')) {
-            const p2 = qs('albDonePartner2').value.trim() || '-';
+            const p2 = qs('albDonePartner2').value.trim() || '—';
             const ending = r === 'коллаб_художники' ? '(рисунок, прикреплённый ВК документом)' : 'Код в личных сообщениях главы.';
-            res = `#итог — выполнили работу для игрока ${target}.\n${name} [${id}] сделал 1-4 стадии работы; ${p2}.\n${ending}`;
+            res = `#итог — выполнили работу для игрока ${target}.\n${name} [${id}] сделал 1—4 стадии работы; ${p2}.\n${ending}`;
         } else {
             let ending = '';
             if (r === 'оформитель') ending = 'Код в личных сообщениях главы.';
             else if (r === 'сборщик') ending = `Опросил ${qs('albDoneCount').value || 0} игроков.`;
-            else if (r === 'художник') ending = `(рисунок, прикреплённый ВК документом)\n${qs('albDoneContent').value.trim() || '-'}`;
-            else ending = qs('albDoneContent').value.trim() || '-';
+            else if (r === 'художник') ending = `(рисунок, прикреплённый ВК документом)\n${qs('albDoneContent').value.trim() || '—'}`;
+            else ending = qs('albDoneContent').value.trim() || '—';
             res = `#итог — ${name} [${id}] выполнил работу для игрока ${target}.\n${ending}`.trim();
         }
     }
@@ -1163,11 +1167,11 @@ if (dolphinBtn) {
             resultText = `${vkTag}\n${myId}, веду ${plainIds} ${vkAction}`;
         } else if (type === 'climb' || type === 'vision') {
             const title = type === 'climb' ? 'Сопровождение на лазательные локации' : 'Прокачивание зоркости';
-            const timeRange = qs('dolphinTimeRange').value.trim() || 'чч:мм - чч:мм';
+            const timeRange = qs('dolphinTimeRange').value.trim() || 'чч:мм — чч:мм';
             const dur = calculateTimeDifference(timeRange).formatted;
             resultText = `[b]${date}[/b]\n[b]${title}[/b]\n[b]Время:[/b] ${timeRange} (${dur})\n[b]Дельфин:[/b] [link${myId}] [${myId}]\n[b]Сопровождаемые:[/b] ${targetsStr}`;
         } else if (type === 'dive') {
-            const timeRange = qs('dolphinTimeRange').value.trim() || 'чч:мм - чч:мм';
+            const timeRange = qs('dolphinTimeRange').value.trim() || 'чч:мм — чч:мм';
             const dives = qs('dolphinDives').value.trim() || '1';
             resultText = `[b]${date}[/b]\n[b]Сопровождение на плавательные локации[/b]\n[b]Время:[/b] ${timeRange} (${dives} заходов)\n[b]Дельфин:[/b] [link${myId}] [${myId}]\n[b]Сопровождаемые:[/b] ${targetsStr}`;
         } else if (type === 'teach') {
@@ -1238,7 +1242,7 @@ if (qs('tdlGenerate')) {
                 const routeStart = isLoc ? `локацию ${qs('tdlLoc').value}` : `маршрут ${qs('tdlRoute').value}`;
                 res = `[b]${date}[/b]\n[b]Начало ${modeTxt} лагерного дозора[/b]\n[link${wId}] [${wId}], занял ${routeStart}`;
             } else {
-                const time = qs('tdlTimeRange').value.trim() || '00:00 - 00:00';
+                const time = qs('tdlTimeRange').value.trim() || '00:00 — 00:00';
                 const dur = calculateTimeDifference(time);
                 const modeTitle = modeTxt === 'активного' ? 'Активный' : 'Пассивный';
                 const rName = isLoc ? qs('tdlLoc').value : qs('tdlRoute').value;
@@ -1246,18 +1250,18 @@ if (qs('tdlGenerate')) {
             }
         } else if (t === 'hunt') {
             const hId = qs('tdlHunterId').value.trim() || 'ID';
-            let catchStr = qs('tdlCatch').value.trim() || '-';
-            if (catchStr !== '-') {
+            let catchStr = qs('tdlCatch').value.trim() || '—';
+            if (catchStr !== '—') {
                 const numbers = catchStr.split(/\s+/);
                 if (numbers.length === 3 && numbers.every(n => !isNaN(n))) {
                     catchStr = `${numbers[0]}/${numbers[1]}/${numbers[2]}`;
                 }
             }
-            res = `[b]${date}[/b]\n[b]Лагерная охота[/b]\n[b]Охотник:[/b] [link${hId}] [${hId}] (${catchStr})\n[b]Доказательства:[/b] [url=${qs('tdlProofBefore').value.trim() || '-'}]до[/url], [url=${qs('tdlProofAfter').value.trim() || '-'}]после[/url]`;
+            res = `[b]${date}[/b]\n[b]Лагерная охота[/b]\n[b]Охотник:[/b] [link${hId}] [${hId}] (${catchStr})\n[b]Доказательства:[/b] [url=${qs('tdlProofBefore').value.trim() || '—'}]до[/url], [url=${qs('tdlProofAfter').value.trim() || '—'}]после[/url]`;
         } else if (t === 'check') {
             const myId = qs('tdlCheckMyId').value.trim() || 'ID';
             const tId = qs('tdlCheckTargetId').value.trim() || 'ID';
-            res = `[b]${date}[/b]\n[b]Проверка дозорного[/b]\nЯ, [link${myId}] [${myId}], проверил дозорного [link${tId}] [${tId}] в ${qs('tdlCheckTime').value.trim() || '-'}; проверка ${qs('tdlCheckStatus').value}`;
+            res = `[b]${date}[/b]\n[b]Проверка дозорного[/b]\nЯ, [link${myId}] [${myId}], проверил дозорного [link${tId}] [${tId}] в ${qs('tdlCheckTime').value.trim() || '—'}; проверка ${qs('tdlCheckStatus').value}`;
         }
         qs('tdlResult').value = res;
     };
@@ -1329,7 +1333,7 @@ function formatHealIds(rawStr) {
             miceStr = ` (+${parts[1]} мышей)`;
         }
         return `[link${id}] [${id}]${miceStr}`;
-    }).join(', ') || '-';
+    }).join(', ') || '—';
 }
 document.querySelectorAll('.shrk-chip').forEach(chip => { chip.addEventListener('click', () => chip.classList.toggle('active')); });
 const healBtn = qs('healGenerate');
@@ -1367,7 +1371,7 @@ if (healBtn) {
             } else if (sub === 'supervision') {
                 const activeChips = document.querySelectorAll('.shrk-chip.active');
                 const replacedVals = Array.from(activeChips).map(chip => chip.getAttribute('data-value'));
-                const replaced = replacedVals.length > 0 ? replacedVals.join(', ') : '-';
+                const replaced = replacedVals.length > 0 ? replacedVals.join(', ') : '—';
                 resultText = `[b]${date}[/b]\n[b]Отчёт о надзоре.[/b]\n[u]Надзорный:[/u] [link${myId}] [${myId}]\n[u]Заменил и провел мероприятия:[/u] ${replaced}`;
             }
         }
@@ -1751,7 +1755,7 @@ if (qs('ffGenerate')) {
             const date = qs('ffToysDate').value.trim() || getMoscowDate();
             const creator = qs('ffToysCreator').value.trim() || 'ID';
             const count = qs('ffToysCount').value.trim() || '0';
-            const proof = qs('ffToysProof').value.trim() || '-';
+            const proof = qs('ffToysProof').value.trim() || '—';
             result =
 `[b]Создание игрушек.[/b] ${date}
 [b]Создающий:[/b] [link${creator}] [${creator}] (${count} игрушек)
@@ -1969,13 +1973,13 @@ if (qs('taskRewardType')) qs('taskRewardType').onchange = () => {
 if (qs('taskGenerate')) qs('taskGenerate').onclick = () => {
     const idInput = qs('taskId');
     const id = idInput ? (idInput.value.trim() || 'ID') : 'ID';
-    const proof = qs('taskProof').value.trim() || '-';
+    const proof = qs('taskProof').value.trim() || '—';
     if (qs('taskMode').value === 'done') {
         qs('taskResult').value = `Я, [link${id}] [${id}], выполнил поручение под номером ${qs('taskNumber').value || 1} за промежуток ${qs('taskRange').value}. [[url=${proof}]Доказательство[/url]].`;
     } else {
         let res = `[b]Запрос награды[/b]\nЯ, [link${id}] [${id}], выполнил требования на ${qs('taskRewardType').value}. [[url=${proof}]Доказательство[/url]].`;
         if (qs('taskRewardType').value === 'клон') {
-            res += `\nИнформация для клона:\nОкрас [[url=${qs('taskCloneColor').value.trim() || '-'}]PNG[/url]];\nРеференс: [[url=${qs('taskCloneRef').value.trim() || '-'}]ссылка[/url]];\nДополнительная информация: ${qs('taskCloneExtra').value.trim() || '-'}.`;
+            res += `\nИнформация для клона:\nОкрас [[url=${qs('taskCloneColor').value.trim() || '—'}]PNG[/url]];\nРеференс: [[url=${qs('taskCloneRef').value.trim() || '—'}]ссылка[/url]];\nДополнительная информация: ${qs('taskCloneExtra').value.trim() || '—'}.`;
         }
         qs('taskResult').value = res;
     }
@@ -2248,22 +2252,22 @@ if (qs('actGenerate')) {
         if (t === 'invite') {
             const id = qs('actInviteId').value.trim() || 'ID';
             const target = qs('actInviteTargetId').value.trim() || 'ID';
-            const proof = qs('actInviteProof').value.trim() || '-';
+            const proof = qs('actInviteProof').value.trim() || '—';
             result =
 `[b]Приглашённый в шайку игрок[/b]
 Я, [link${id}] [${id}], подтверждаю, что пригласил в шайку игрока [link${target}] [${target}].
 [b]Доказательства:[/b] [url=${proof}]скриншот[/url]`;
         } else if (t === 'alb_congrat') {
             const id = qs('actAlbId').value.trim() || 'ID';
-            const blogLink = qs('actAlbBlogLink').value.trim() || '-';
-            const proof = qs('actAlbProof').value.trim() || '-';
+            const blogLink = qs('actAlbBlogLink').value.trim() || '—';
+            const proof = qs('actAlbProof').value.trim() || '—';
             result =
 `[b]Поздравление для блога отряда Альбатросов[/b]
 Я, [link${id}] [${id}], подтверждаю, что написал поздравление для блога отряда Альбатросов.
 [b]Доказательства:[/b] [url=${blogLink}]поздравительный блог[/url], [url=${proof}]скриншот[/url]`;
         } else if (t === 'skills') {
             const id = qs('actSkillsId').value.trim() || 'ID';
-            const proof = qs('actSkillsProof').value.trim() || '-';
+            const proof = qs('actSkillsProof').value.trim() || '—';
 
             // Собираем навыки
             const skillParts = [];

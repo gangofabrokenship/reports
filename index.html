@@ -35,6 +35,7 @@
                 <button class="nav-btn" data-form="squad-seagulls">Отряд Чаек</button>
                 <button class="nav-btn" data-form="squad-sharks">Отряд Акул</button>
                 <button class="nav-btn" data-form="squad-dolphins">Отряд Дельфинов</button>
+                <button class="nav-btn" data-form="squad-flyingfish">Отряд Летучих рыб</button>
                 <button class="nav-btn" data-form="squad-toddlers">Отряд Мальков</button>
                 <button class="nav-btn" data-form="squad-kits">Отряд Китов</button>
                 <button class="nav-btn" data-form="squad-albatross">Отряд Альбатросов</button>
@@ -634,7 +635,138 @@
     </div>
   </div>
 </div>
-        <div id="form-squad-flyingfish" class="stack form-view hidden"><div class="card"><h2>Отряд Летучих рыб<span class="blog-links"> <a href="https://catwar.net/blog726853" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726853" target="_blank">catwar.su</a></span></h2></div></div>
+        <div id="form-squad-flyingfish" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Отряд Летучих рыб<span class="blog-links"> <a href="https://catwar.net/blog726853" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog726853" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div class="full">
+        <label for="ffType">Вид отчёта</label>
+        <select id="ffType">
+          <option value="games">Проведение игр</option>
+          <option value="toys">Создание игрушек</option>
+          <option value="lecture">Проведение лекции</option>
+          <option value="tale">Рассказанная сказка</option>
+        </select>
+      </div>
+
+      <!-- ===== ПРОВЕДЕНИЕ ИГР ===== -->
+      <div class="full ff-sub-games">
+        <label for="ffGamesDate">Дата (дд.мм.гг)</label>
+        <input id="ffGamesDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="full ff-sub-games">
+        <label for="ffGamesTime">Время (чч:мм - чч:мм)</label>
+        <input id="ffGamesTime" type="text" placeholder="18:00 - 19:00">
+      </div>
+      <div class="full ff-sub-games">
+        <label for="ffGamesLead">Ведущий (ID)</label>
+        <input id="ffGamesLead" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full ff-sub-games">
+        <label>Участники (ID и монеты)</label>
+        <div id="ffGamesParts" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="ffGamesAdd" class="add-row-btn">+ Добавить участника</button>
+        </div>
+      </div>
+
+      <!-- ===== СОЗДАНИЕ ИГРУШЕК ===== -->
+      <div class="full ff-sub-toys hidden">
+        <label for="ffToysDate">Дата (дд.мм.гг)</label>
+        <input id="ffToysDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="full ff-sub-toys hidden">
+        <label for="ffToysCreator">Создающий (ID)</label>
+        <input id="ffToysCreator" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full ff-sub-toys hidden">
+        <label for="ffToysCount">Игрушек</label>
+        <input id="ffToysCount" type="number" min="0" placeholder="0">
+      </div>
+      <div class="full ff-sub-toys hidden">
+        <label for="ffToysProof">Доказательства (ссылка)</label>
+        <input id="ffToysProof" type="text" placeholder="ссылка">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+      </div>
+
+            <!-- ===== ПРОВЕДЕНИЕ ЛЕКЦИИ ===== -->
+      <div class="full ff-sub-lecture hidden">
+        <label for="ffLectureDate">Дата (дд.мм.гг)</label>
+        <input id="ffLectureDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="full ff-sub-lecture hidden">
+        <label for="ffLectureTime">Время (чч:мм)</label>
+        <input id="ffLectureTime" type="text" placeholder="18:35">
+      </div>
+      <div class="full ff-sub-lecture hidden">
+        <label for="ffLectureLead">Ведущий (ID)</label>
+        <input id="ffLectureLead" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full ff-sub-lecture hidden">
+        <label for="ffLectureTopic">Тема лекции</label>
+        <select id="ffLectureTopic">
+          <option value="Основы охоты">Основы охоты</option>
+          <option value="Правила и кодекс">Правила и кодекс</option>
+          <option value="Чрезвычайные ситуации">Чрезвычайные ситуации</option>
+          <option value="Посвящение и тесты">Посвящение и тесты</option>
+          <option value="Боережим">Боережим</option>
+          <option value="Жизнь малышей">Жизнь малышей</option>
+          <option value="Территория">Территория</option>
+          <option value="Иерархия">Иерархия</option>
+          <option value="Техподдержка и АМС">Техподдержка и АМС</option>
+          <option value="Ныряние и лазание">Ныряние и лазание</option>
+        </select>
+      </div>
+      <div class="full ff-sub-lecture hidden">
+        <label>Участники (ID и монеты)</label>
+        <div id="ffLectureParts" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="ffLectureAdd" class="add-row-btn">+ Добавить участника</button>
+        </div>
+      </div>
+
+            <!-- ===== РАССКАЗАННАЯ СКАЗКА ===== -->
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleDate">Дата (дд.мм.гг)</label>
+        <input id="ffTaleDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleTime">Время (чч:мм)</label>
+        <input id="ffTaleTime" type="text" placeholder="18:35">
+      </div>
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleLead">Ведущий (ID)</label>
+        <input id="ffTaleLead" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleSize">Размер сказки</label>
+        <select id="ffTaleSize">
+          <option value="Маленькие">Маленькие</option>
+          <option value="Средние">Средние</option>
+          <option value="Большие">Большие</option>
+        </select>
+      </div>
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleTitle">Название сказки</label>
+        <select id="ffTaleTitle"></select>
+      </div>
+      <div class="full ff-sub-tale hidden">
+        <label for="ffTaleParts">Участники (ID через пробел)</label>
+        <input id="ffTaleParts" type="text" placeholder="123456 789012">
+      </div>
+
+    <div class="actions">
+      <button class="primary" id="ffGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="ffResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="ffResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
 <div id="form-squad-albatross" class="stack form-view hidden">
   <div class="card stack">
     <h2>Отряд Альбатросов<span class="blog-links"> <a href="https://catwar.net/blog731079" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog731079" target="_blank">catwar.su</a> | <a href="https://vk.ru/im/convo/2000000280" target="_blank">чат ВК</a></span></h2>

@@ -1980,3 +1980,281 @@ if (qs('taskGenerate')) qs('taskGenerate').onclick = () => {
         qs('taskResult').value = res;
     }
 };
+
+// ===================== БЛОГ АКТИВНОСТИ =====================
+const ACT_SKILLS = [
+    { label: 'Активность «Замечательнейшая»', coins: 20, group: 'activity1' },
+    { label: 'Активность «Любимый кот»', coins: 30, group: 'activity2' },
+    { label: 'Активность «Легенда сайта»', coins: 40, group: 'activity3' },
+    { label: 'Активность «Ходячий миф»', coins: 50, group: 'activity4' },
+    { label: '3 уровень боевых умений (БУ)', coins: 15, group: 'bu' },
+    { label: '4 уровень боевых умений (БУ)', coins: 30, group: 'bu' },
+    { label: '5 уровень боевых умений (БУ)', coins: 50, group: 'bu' },
+    { label: '4 уровень нюха (УН)', coins: 30, group: 'un' },
+    { label: '5 уровень плавательных умений (ПУ)', coins: 40, group: 'pu' },
+    { label: '5 уровень копательных умений (КУ)', coins: 50, group: 'ku' },
+    { label: '5 уровень лазательных умений (ЛУ)', coins: 40, group: 'lu' },
+    { label: '4 уровень зоркости (ЗУ)', coins: 50, group: 'zu' }
+];
+
+const ACT_FEATHERS = ['синее перо', 'красное перо', 'чёрное перо'];
+
+const ACT_WATER = [
+    'ресурс на +15 ПУ',
+    'ресурс на +20 ПУ',
+    'ресурс на +28 ПУ',
+    'ресурс на +30 ПУ',
+    'ресурс на сон'
+];
+
+const ACT_HEAL = [
+    { key: 'мох', one: 'мох', few: 'мха', many: 'мха' },
+    { key: 'паутина', one: 'паутина', few: 'паутины', many: 'паутины' },
+    { key: 'крепкая ветка', one: 'крепкая ветка', few: 'крепкие ветки', many: 'крепких веток' },
+    { key: 'вьюнок', one: 'вьюнковый костоправ', few: 'вьюнковых костоправа', many: 'вьюнковых костоправов' },
+    { key: 'плотная водоросль', one: 'плотная водоросль', few: 'плотные водоросли', many: 'плотных водорослей' },
+    { key: 'трава от отравления', one: 'трава от отравления', few: 'травы от отравления', many: 'трав от отравления' },
+    { key: 'трава от кашля', one: 'трава от кашля', few: 'травы от кашля', many: 'трав от кашля' },
+    { key: 'трава от ран', one: 'трава от ран', few: 'травы от ран', many: 'трав от ран' }
+];
+
+function updateActForm() {
+    const t = qs('actType').value;
+    ['invite', 'alb_congrat', 'skills', 'feathers', 'water', 'heal_res'].forEach(k => {
+        document.querySelectorAll(`.act-sub-${k}`).forEach(el =>
+            el.classList.toggle('hidden', t !== k));
+    });
+}
+if (qs('actType')) {
+    qs('actType').onchange = updateActForm;
+    updateActForm();
+}
+if (qs('actHealDate')) qs('actHealDate').value = getMoscowDate();
+
+// --- Универсальная строка "селект + количество + ×" ---
+function addActRow(listId, selectOptions, optionsAreObjects = false) {
+    const list = qs(listId);
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'act-row';
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '1fr 90px 32px';
+    row.style.gap = '6px';
+    row.style.alignItems = 'center';
+
+    const sel = document.createElement('select');
+    sel.className = 'act-row-select';
+    sel.style.height = '30px';
+    sel.style.fontSize = '12px';
+    selectOptions.forEach(opt => {
+        const o = document.createElement('option');
+        if (optionsAreObjects) {
+            o.value = opt.key;
+            o.textContent = opt.label || opt.key;
+            if (opt.group) o.dataset.group = opt.group;
+            if (opt.coins !== undefined) o.dataset.coins = opt.coins;
+        } else {
+            o.value = opt;
+            o.textContent = opt;
+        }
+        sel.appendChild(o);
+    });
+
+    const cnt = document.createElement('input');
+    cnt.type = 'number';
+    cnt.min = '1';
+    cnt.value = '1';
+    cnt.className = 'act-row-count';
+    cnt.style.height = '30px';
+    cnt.style.padding = '2px 6px';
+    cnt.style.fontSize = '12px';
+    cnt.style.boxSizing = 'border-box';
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.textContent = '×';
+    del.title = 'Удалить';
+    del.style.height = '30px';
+    del.style.width = '32px';
+    del.style.padding = '0';
+    del.style.cursor = 'pointer';
+    del.style.fontSize = '16px';
+    del.style.lineHeight = '1';
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+    del.style.border = '1px solid var(--line)';
+    del.addEventListener('click', () => {
+        row.remove();
+        if (qs(listId).children.length === 0) addActRow(listId, selectOptions, optionsAreObjects);
+    });
+
+    row.appendChild(sel);
+    row.appendChild(cnt);
+    row.appendChild(del);
+    list.appendChild(row);
+}
+
+// --- Инициализация стартовых строк ---
+if (qs('actSkillsList')) {
+    qs('actSkillsAdd').addEventListener('click', () => addActRow('actSkillsList', ACT_SKILLS, true));
+    if (qs('actSkillsList').children.length === 0) addActRow('actSkillsList', ACT_SKILLS, true);
+    // Уникальность по группе
+    qs('actSkillsList').addEventListener('change', e => {
+        if (!e.target.classList.contains('act-row-select')) return;
+        const row = e.target.closest('.act-row');
+        const group = e.target.selectedOptions[0]?.dataset.group;
+        if (!group) return;
+        qs('actSkillsList').querySelectorAll('.act-row').forEach(other => {
+            if (other === row) return;
+            const otherGroup = other.querySelector('.act-row-select')?.selectedOptions[0]?.dataset.group;
+            if (otherGroup === group) {
+                other.remove();
+            }
+        });
+        if (qs('actSkillsList').children.length === 0) addActRow('actSkillsList', ACT_SKILLS, true);
+    });
+}
+if (qs('actFeathersList')) {
+    qs('actFeathersAdd').addEventListener('click', () => addActRow('actFeathersList', ACT_FEATHERS));
+    if (qs('actFeathersList').children.length === 0) addActRow('actFeathersList', ACT_FEATHERS);
+    qs('actFeathersList').addEventListener('change', e => {
+        if (!e.target.classList.contains('act-row-select')) return;
+        const row = e.target.closest('.act-row');
+        const val = e.target.value;
+        qs('actFeathersList').querySelectorAll('.act-row').forEach(other => {
+            if (other === row) return;
+            const otherVal = other.querySelector('.act-row-select')?.value;
+            if (otherVal === val) other.remove();
+        });
+        if (qs('actFeathersList').children.length === 0) addActRow('actFeathersList', ACT_FEATHERS);
+    });
+}
+if (qs('actWaterList')) {
+    qs('actWaterAdd').addEventListener('click', () => addActRow('actWaterList', ACT_WATER));
+    if (qs('actWaterList').children.length === 0) addActRow('actWaterList', ACT_WATER);
+}
+if (qs('actHealList')) {
+    qs('actHealAdd').addEventListener('click', () => addActRow('actHealList', ACT_HEAL.map(h => h.one), false));
+    if (qs('actHealList').children.length === 0) addActRow('actHealList', ACT_HEAL.map(h => h.one), false);
+    qs('actHealList').addEventListener('change', e => {
+        if (!e.target.classList.contains('act-row-select')) return;
+        const row = e.target.closest('.act-row');
+        const val = e.target.value;
+        qs('actHealList').querySelectorAll('.act-row').forEach(other => {
+            if (other === row) return;
+            const otherVal = other.querySelector('.act-row-select')?.value;
+            if (otherVal === val) other.remove();
+        });
+        if (qs('actHealList').children.length === 0) addActRow('actHealList', ACT_HEAL.map(h => h.one), false);
+    });
+}
+
+// --- Плюрализация целебных ресурсов ---
+function healResPlural(key, count) {
+    const entry = ACT_HEAL.find(h => h.one === key);
+    if (!entry) return `${count} ${key}`;
+    const n = Math.abs(count) % 100;
+    const n1 = n % 10;
+    let word = entry.many;
+    if (n > 10 && n < 20) word = entry.many;
+    else if (n1 === 1) word = entry.one;
+    else if (n1 >= 2 && n1 <= 4) word = entry.few;
+    return `${count} ${word}`;
+}
+
+// --- Сбор строк ---
+function collectActRows(listId, formatter) {
+    const list = qs(listId);
+    if (!list) return '';
+    const parts = [];
+    list.querySelectorAll('.act-row').forEach(row => {
+        const sel = row.querySelector('.act-row-select');
+        const cnt = row.querySelector('.act-row-count');
+        if (!sel) return;
+        parts.push(formatter(sel, cnt));
+    });
+    return parts.join(', ');
+}
+
+// --- Генерация отчёта ---
+if (qs('actGenerate')) {
+    qs('actGenerate').onclick = () => {
+        const t = qs('actType').value;
+        const date = getMoscowDate();
+        let result = '';
+
+        if (t === 'invite') {
+            const id = qs('actInviteId').value.trim() || 'ID';
+            const target = qs('actInviteTargetId').value.trim() || 'ID';
+            const proof = qs('actInviteProof').value.trim() || '-';
+            result =
+`[b]Приглашённый в шайку игрок[/b]
+Я, [link${id}] [${id}], подтверждаю, что пригласил в шайку игрока [link${target}] [${target}].
+[b]Доказательства:[/b] [url=${proof}]скриншот[/url]`;
+        } else if (t === 'alb_congrat') {
+            const id = qs('actAlbId').value.trim() || 'ID';
+            const blogLink = qs('actAlbBlogLink').value.trim() || '-';
+            const proof = qs('actAlbProof').value.trim() || '-';
+            result =
+`[b]Поздравление для блога отряда Альбатросов[/b]
+Я, [link${id}] [${id}], подтверждаю, что написал поздравление для блога отряда Альбатросов.
+[b]Доказательства:[/b] [url=${blogLink}]поздравительный блог[/url], [url=${proof}]скриншот[/url]`;
+        } else if (t === 'skills') {
+            const id = qs('actSkillsId').value.trim() || 'ID';
+            const proof = qs('actSkillsProof').value.trim() || '-';
+            const skills = collectActRows('actSkillsList', (sel, cnt) => {
+                const coins = sel.selectedOptions[0]?.dataset.coins || 0;
+                return `${sel.value}`;
+            });
+            // Собираем "за что именно и сколько монет"
+            const details = [];
+            let total = 0;
+            qs('actSkillsList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                const coins = Number(sel.selectedOptions[0]?.dataset.coins) || 0;
+                details.push(`${sel.value} — ${coins} монет`);
+                total += coins;
+            });
+            const detailsStr = details.length > 0 ? details.join(', ') + `. Всего: ${total} монет` : '—';
+            result =
+`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за навыки/активность, (за что именно и сколько монет)
+Доказательства: [url=${proof}]скриншот[/url]
+
+Подробно:
+${detailsStr}`;
+        } else if (t === 'feathers') {
+            const id = qs('actFeathersId').value.trim() || 'ID';
+            const keeper = qs('actFeathersKeeperId').value.trim() || 'ID';
+            const parts = collectActRows('actFeathersList', (sel, cnt) => {
+                const n = cnt.value.trim() || '1';
+                return `${n} ${sel.value}`;
+            });
+            result =
+`Я, [link${id}] [${id}], собрал ${parts || 'название пера/перьев'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
+        } else if (t === 'water') {
+            const id = qs('actWaterId').value.trim() || 'ID';
+            const keeper = qs('actWaterKeeperId').value.trim() || 'ID';
+            const parts = collectActRows('actWaterList', (sel, cnt) => {
+                const n = cnt.value.trim() || '1';
+                return `${n} ${sel.value}`;
+            });
+            result =
+`Я, [link${id}] [${id}], собрал ресурсов на (кол-во ПУ, даваемое ресурсом/сон): ${parts}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
+        } else if (t === 'heal_res') {
+            const dateVal = qs('actHealDate').value.trim() || date;
+            const id = qs('actHealId').value.trim() || 'ID';
+            const parts = collectActRows('actHealList', (sel, cnt) => {
+                const n = Number(cnt.value.trim()) || 1;
+                return healResPlural(sel.value, n);
+            });
+            result =
+`[b]${dateVal}[/b]
+[b]Отчёт о сдаче целебных ресурсов.[/b]
+[link${id}] [${id}]
+[u]Кол-во и вид трав:[/u] ${parts || '1 ветка, 1 вьюнковый костоправ, 1 целебная водоросль, 1 трава от кашля/отравления/ран и другое.'}`;
+        }
+
+        qs('actResult').value = result;
+    };
+}

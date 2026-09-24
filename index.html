@@ -207,6 +207,135 @@
         </div>
         <div id="form-pirate-code" class="stack form-view hidden"><div class="card"><h2>Пиратский кодекс<span class="blog-links"> <a href="https://catwar.net/blog752421" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog752421" target="_blank">catwar.su</a></span></h2></div></div>
         <div id="form-shelter-blog" class="stack form-view hidden"><div class="card"><h2>Блог притулья<span class="blog-links"> <a href="https://catwar.net/blog1079063" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog1079063" target="_blank">catwar.su</a></span></h2></div></div>
+        <div id="form-activity-blog" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Блог активности<span class="blog-links"> <a href="https://catwar.net/blog1017830" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog1017830" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div class="full">
+        <label for="actType">Вид отчёта</label>
+        <select id="actType">
+          <option value="invite">Приглашённый в шайку игрок</option>
+          <option value="alb_congrat">Поздравление для блога отряда Альбатросов</option>
+          <option value="skills">Запрос монеток за навыки</option>
+          <option value="feathers">Собранные перья</option>
+          <option value="water">Собранные водные ресурсы</option>
+          <option value="heal_res">Добытые целебные ресурсы</option>
+        </select>
+      </div>
+
+      <!-- ===== ПРИГЛАШЁННЫЙ ===== -->
+      <div class="full act-sub-invite">
+        <label for="actInviteId">Ваш ID</label>
+        <input id="actInviteId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-invite">
+        <label for="actInviteTargetId">ID приглашённого</label>
+        <input id="actInviteTargetId" type="text" placeholder="1234567">
+      </div>
+      <div class="full act-sub-invite">
+        <label for="actInviteProof">Ссылка на скриншот</label>
+        <input id="actInviteProof" type="text" placeholder="ссылка">
+      </div>
+
+      <!-- ===== ПОЗДРАВЛЕНИЕ АЛЬБАТРОСАМ ===== -->
+      <div class="full act-sub-alb_congrat hidden">
+        <label for="actAlbId">Ваш ID</label>
+        <input id="actAlbId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-alb_congrat hidden">
+        <label for="actAlbBlogLink">Ссылка на поздравительный блог</label>
+        <input id="actAlbBlogLink" type="text" placeholder="ссылка">
+      </div>
+      <div class="full act-sub-alb_congrat hidden">
+        <label for="actAlbProof">Ссылка на скриншот</label>
+        <input id="actAlbProof" type="text" placeholder="ссылка">
+      </div>
+
+      <!-- ===== ЗАПРОС МОНЕТОК ЗА НАВЫКИ ===== -->
+      <div class="full act-sub-skills hidden">
+        <label for="actSkillsId">Ваш ID</label>
+        <input id="actSkillsId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-skills hidden">
+        <label>Выберите навыки (без повторов категории)</label>
+        <div id="actSkillsList" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="actSkillsAdd" class="add-row-btn">+ Добавить навык</button>
+        </div>
+      </div>
+      <div class="full act-sub-skills hidden">
+        <label for="actSkillsProof">Ссылка на скриншот</label>
+        <input id="actSkillsProof" type="text" placeholder="ссылка">
+      </div>
+
+      <!-- ===== СОБРАННЫЕ ПЕРЬЯ ===== -->
+      <div class="full act-sub-feathers hidden">
+        <label for="actFeathersId">Ваш ID</label>
+        <input id="actFeathersId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-feathers hidden">
+        <label>Собранные перья</label>
+        <div id="actFeathersList" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="actFeathersAdd" class="add-row-btn">+ Добавить перо</button>
+        </div>
+      </div>
+      <div class="full act-sub-feathers hidden">
+        <label for="actFeathersKeeperId">ID ответственного за сундук</label>
+        <input id="actFeathersKeeperId" type="text" placeholder="1234567">
+      </div>
+
+      <!-- ===== ВОДНЫЕ РЕСУРСЫ ===== -->
+      <div class="full act-sub-water hidden">
+        <label for="actWaterId">Ваш ID</label>
+        <input id="actWaterId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-water hidden">
+        <label>Собранные ресурсы</label>
+        <div id="actWaterList" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="actWaterAdd" class="add-row-btn">+ Добавить ресурс</button>
+        </div>
+      </div>
+      <div class="full act-sub-water hidden">
+        <label for="actWaterKeeperId">ID ответственного за сундук</label>
+        <input id="actWaterKeeperId" type="text" placeholder="1234567">
+      </div>
+
+      <!-- ===== ЦЕЛЕБНЫЕ РЕСУРСЫ ===== -->
+      <div class="full act-sub-heal_res hidden">
+        <label for="actHealDate">Дата (дд.мм.гг)</label>
+        <input id="actHealDate" type="text" class="save-date" placeholder="дд.мм.гг">
+      </div>
+      <div class="full act-sub-heal_res hidden">
+        <label for="actHealId">Ваш ID</label>
+        <input id="actHealId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div class="full act-sub-heal_res hidden">
+        <label>Добытые ресурсы (кол-во и вид)</label>
+        <div id="actHealList" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="actHealAdd" class="add-row-btn">+ Добавить ресурс</button>
+        </div>
+        <div style="font-size: 10px; opacity: 0.7; margin-top: 6px; line-height: 1.5;">
+          Например: <b>1 ветка, 1 вьюнковый костоправ, 1 целебная водоросль, 1 трава от кашля/отравления/ран</b>.
+          Склонения подбираются автоматически.
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="actGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="actResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="actResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
         <div id="form-task-board" class="stack form-view hidden">
           <div class="card stack">
             <h2>Доска поручений<span class="blog-links"> <a href="https://catwar.net/blog1095323" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog1095323" target="_blank">catwar.su</a></span></h2>
@@ -1073,7 +1202,7 @@
     <h2>Отряд Мальков<span class="blog-links"> <a href="https://catwar.net/blog1194933" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog1194933" target="_blank">catwar.su</a></span></h2>
     <div class="grid">
       <div class="full">
-        <label for="tdlType">Вид деятельности</label>
+        <label for="tdlType">Вид отчёта</label>
         <select id="tdlType">
           <option value="patrol">Лагерный патруль</option>
           <option value="watch_start">Начало лагерного дозора</option>

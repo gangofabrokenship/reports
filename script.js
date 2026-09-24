@@ -2549,5 +2549,6 @@ const result =
 [b]Правило:[/b] ${rule}
 [b]Пункт:[/b] ${point}
 [b]Доказательства:[/b] ${proof}`;
+ qs('codexResult').value = result;
     };
 }

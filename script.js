@@ -1599,7 +1599,7 @@ const FF_TALES = {
     ],
     'Большие': [
         'История старого Мрака',
-        'Легенда о ките который хотел стать бабочкой',
+        'Легенда о ките, который хотел стать бабочкой',
         'И у жадности бывает лико',
         'Новый дом',
         'Море зовёт'
@@ -1787,6 +1787,87 @@ if (qs('ffGenerate')) {
         }
 
         qs('ffResult').value = result;
+    };
+}
+
+// ===================== ОТРЯД РЫБ-КЛОУНОВ =====================
+function addClownIdRow(listId) {
+    const list = qs(listId);
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'clown-row';
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '1fr 32px';
+    row.style.gap = '6px';
+    row.style.alignItems = 'center';
+
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = 'ID';
+    inp.className = 'clown-row-id';
+    inp.style.height = '30px';
+    inp.style.padding = '2px 8px';
+    inp.style.fontSize = '12px';
+    inp.style.boxSizing = 'border-box';
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.textContent = '×';
+    del.title = 'Удалить';
+    del.style.height = '30px';
+    del.style.width = '32px';
+    del.style.padding = '0';
+    del.style.cursor = 'pointer';
+    del.style.fontSize = '16px';
+    del.style.lineHeight = '1';
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+    del.style.border = '1px solid var(--line)';
+    del.addEventListener('click', () => {
+        row.remove();
+        if (qs(listId).children.length === 0) addClownIdRow(listId);
+    });
+
+    row.appendChild(inp);
+    row.appendChild(del);
+    list.appendChild(row);
+}
+
+if (qs('clownOrganizersAdd')) {
+    qs('clownOrganizersAdd').addEventListener('click', () => addClownIdRow('clownOrganizers'));
+}
+if (qs('clownWinnersAdd')) {
+    qs('clownWinnersAdd').addEventListener('click', () => addClownIdRow('clownWinners'));
+}
+if (qs('clownOrganizers') && qs('clownOrganizers').children.length === 0) addClownIdRow('clownOrganizers');
+if (qs('clownWinners') && qs('clownWinners').children.length === 0) addClownIdRow('clownWinners');
+
+function collectClownIds(listId) {
+    const list = qs(listId);
+    if (!list) return '';
+    const rows = list.querySelectorAll('.clown-row');
+    const parts = [];
+    rows.forEach(row => {
+        const id = row.querySelector('.clown-row-id').value.trim();
+        if (id) parts.push(`[link${id}] [${id}]`);
+    });
+    return parts.join(', ') || '[linkID] [ID]';
+}
+
+if (qs('clownGenerate')) {
+    qs('clownGenerate').onclick = () => {
+        const name = qs('clownFestName').value;
+        const from = qs('clownDateFrom').value.trim() || 'дд.мм.гг';
+        const to = qs('clownDateTo').value.trim() || 'дд.мм.гг';
+        const organizers = collectClownIds('clownOrganizers');
+        const winners = collectClownIds('clownWinners');
+        const result =
+`[b]Фестиваль:[/b] ${name}
+[b]Дата проведения:[/b] ${from} — ${to}
+[b]Организаторы фестиваля:[/b] ${organizers}
+[b]Победители фестиваля:[/b] ${winners}`;
+        qs('clownResult').value = result;
     };
 }
 

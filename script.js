@@ -2188,8 +2188,9 @@ if (qs('actActivityList')) {
     });
 }
 if (qs('actFeathersList')) {
-    qs('actFeathersAdd').addEventListener('click', () => addActCountRow('actFeathersList', ACT_FEATHERS, false));
-    if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', ACT_FEATHERS, false);
+    const featherOptions = ACT_FEATHERS.map(f => ({ one: f.one }));
+    qs('actFeathersAdd').addEventListener('click', () => addActCountRow('actFeathersList', featherOptions, true));
+    if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', featherOptions, true);
     qs('actFeathersList').addEventListener('change', e => {
         if (!e.target.classList.contains('act-row-select')) return;
         const row = e.target.closest('.act-row');
@@ -2199,12 +2200,13 @@ if (qs('actFeathersList')) {
             const otherVal = other.querySelector('.act-row-select')?.value;
             if (otherVal === val) other.remove();
         });
-        if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', ACT_FEATHERS, false);
+        if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', featherOptions, true);
     });
 }
 if (qs('actWaterList')) {
-    qs('actWaterAdd').addEventListener('click', () => addActCountRow('actWaterList', ACT_WATER, false));
-    if (qs('actWaterList').children.length === 0) addActCountRow('actWaterList', ACT_WATER, false);
+    const waterOptions = ACT_WATER.map(w => ({ one: w.one }));
+    qs('actWaterAdd').addEventListener('click', () => addActCountRow('actWaterList', waterOptions, true));
+    if (qs('actWaterList').children.length === 0) addActCountRow('actWaterList', waterOptions, true);
 }
 if (qs('actHealList')) {
     const healOptions = ACT_HEAL.map(h => ({ one: h.one }));
@@ -2223,9 +2225,9 @@ if (qs('actHealList')) {
     });
 }
 
-// --- Плюрализация целебных ресурсов ---
-function healResPlural(key, count) {
-    const entry = ACT_HEAL.find(h => h.one === key);
+// --- Универсальная плюрализация ---
+function pluralizeByArray(arr, key, count) {
+    const entry = arr.find(x => x.key === key || x.one === key);
     if (!entry) return `${count} ${key}`;
     const n = Math.abs(count) % 100;
     const n1 = n % 10;
@@ -2301,7 +2303,7 @@ if (qs('actGenerate')) {
                 lines.push(`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за навыки/активность.`);
             }
             result = lines.join('\n') + `\nДоказательства: [url=${proof}]скриншот[/url]`;
-        } else if (t === 'feathers') {
+                } else if (t === 'feathers') {
             const id = qs('actFeathersId').value.trim() || 'ID';
             const keeper = qs('actFeathersKeeperId').value.trim() || 'ID';
             const parts = [];
@@ -2309,11 +2311,24 @@ if (qs('actGenerate')) {
                 const sel = row.querySelector('.act-row-select');
                 const cnt = row.querySelector('.act-row-count');
                 if (!sel) return;
-                const n = cnt ? cnt.value.trim() || '1' : '1';
-                parts.push(`${n} ${sel.value}`);
+                const n = Number(cnt ? (cnt.value.trim() || '1') : '1');
+                parts.push(pluralizeByArray(ACT_FEATHERS, sel.value, n));
             });
             result =
 `Я, [link${id}] [${id}], собрал ${parts.join(', ') || 'название пера/перьев'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
+        } else if (t === 'water') {
+            const id = qs('actWaterId').value.trim() || 'ID';
+            const keeper = qs('actWaterKeeperId').value.trim() || 'ID';
+            const parts = [];
+            qs('actWaterList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                const cnt = row.querySelector('.act-row-count');
+                if (!sel) return;
+                const n = Number(cnt ? (cnt.value.trim() || '1') : '1');
+                parts.push(pluralizeByArray(ACT_WATER, sel.value, n));
+            });
+            result =
+`Я, [link${id}] [${id}], собрал ${parts.join(', ') || 'название ресурса'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
         } else if (t === 'water') {
             const id = qs('actWaterId').value.trim() || 'ID';
             const keeper = qs('actWaterKeeperId').value.trim() || 'ID';
@@ -2336,7 +2351,7 @@ if (qs('actGenerate')) {
                 const cnt = row.querySelector('.act-row-count');
                 if (!sel) return;
                 const n = Number(cnt.value.trim()) || 1;
-                parts.push(healResPlural(sel.value, n));
+                parts.push(pluralizeByArray(ACT_HEAL, sel.value, n));
             });
             result =
 `[b]${dateVal}[/b]

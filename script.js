@@ -1132,7 +1132,9 @@ function updateDolphinForm() {
 
     if (vkActivityWrap) vkActivityWrap.classList.toggle('hidden', type !== 'vk');
     if (timeWrap) timeWrap.classList.toggle('hidden', type === 'teach' || type === 'vk' || type === 'dive');
+    const diveWrap2 = qs('dolphinDiveWrap2');
     if (diveWrap) diveWrap.classList.toggle('hidden', type !== 'dive');
+    if (diveWrap2) diveWrap2.classList.toggle('hidden', type !== 'dive');
     if (proofWrap) proofWrap.classList.toggle('hidden', type !== 'teach');
     if (adultHint) adultHint.classList.toggle('hidden', type !== 'dive');
     if (targetLabel) targetLabel.textContent = type === 'teach' ? 'ID игрока' : 'ID сопровождаемых (через пробел)';
@@ -1171,7 +1173,7 @@ if (dolphinBtn) {
             const dur = calculateTimeDifference(timeRange).formatted;
             resultText = `[b]${date}[/b]\n[b]${title}[/b]\n[b]Время:[/b] ${timeRange} (${dur})\n[b]Дельфин:[/b] [link${myId}] [${myId}]\n[b]Сопровождаемые:[/b] ${targetsStr}`;
         } else if (type === 'dive') {
-            const timeRange = qs('dolphinTimeRange').value.trim() || 'чч:мм — чч:мм';
+            const timeRange = qs('dolphinTimeRangeDive').value.trim() || 'чч:мм - чч:мм';
             const dives = qs('dolphinDives').value.trim() || '1';
             resultText = `[b]${date}[/b]\n[b]Сопровождение на плавательные локации[/b]\n[b]Время:[/b] ${timeRange} (${dives} заходов)\n[b]Дельфин:[/b] [link${myId}] [${myId}]\n[b]Сопровождаемые:[/b] ${targetsStr}`;
         } else if (type === 'teach') {

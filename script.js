@@ -1983,28 +1983,35 @@ if (qs('taskGenerate')) qs('taskGenerate').onclick = () => {
 
 // ===================== БЛОГ АКТИВНОСТИ =====================
 const ACT_SKILLS = [
-    { label: 'Активность «Замечательнейшая»', coins: 20, group: 'activity1' },
-    { label: 'Активность «Любимый кот»', coins: 30, group: 'activity2' },
-    { label: 'Активность «Легенда сайта»', coins: 40, group: 'activity3' },
-    { label: 'Активность «Ходячий миф»', coins: 50, group: 'activity4' },
-    { label: '3 уровень боевых умений (БУ)', coins: 15, group: 'bu' },
-    { label: '4 уровень боевых умений (БУ)', coins: 30, group: 'bu' },
-    { label: '5 уровень боевых умений (БУ)', coins: 50, group: 'bu' },
-    { label: '4 уровень нюха (УН)', coins: 30, group: 'un' },
-    { label: '5 уровень плавательных умений (ПУ)', coins: 40, group: 'pu' },
-    { label: '5 уровень копательных умений (КУ)', coins: 50, group: 'ku' },
-    { label: '5 уровень лазательных умений (ЛУ)', coins: 40, group: 'lu' },
-    { label: '4 уровень зоркости (ЗУ)', coins: 50, group: 'zu' }
+    { label: '3 уровень боевых умений (БУ)', short: '3 БУ', coins: 15, group: 'bu' },
+    { label: '4 уровень боевых умений (БУ)', short: '4 БУ', coins: 30, group: 'bu' },
+    { label: '5 уровень боевых умений (БУ)', short: '5 БУ', coins: 50, group: 'bu' },
+    { label: '4 уровень нюха (УН)', short: '4 УН', coins: 30, group: 'un' },
+    { label: '5 уровень плавательных умений (ПУ)', short: '5 ПУ', coins: 40, group: 'pu' },
+    { label: '5 уровень копательных умений (КУ)', short: '5 КУ', coins: 50, group: 'ku' },
+    { label: '5 уровень лазательных умений (ЛУ)', short: '5 ЛУ', coins: 40, group: 'lu' },
+    { label: '4 уровень зоркости (ЗУ)', short: '4 ЗУ', coins: 50, group: 'zu' }
 ];
 
-const ACT_FEATHERS = ['синее перо', 'красное перо', 'чёрное перо'];
+const ACT_ACTIVITY = [
+    { label: 'Активность «Замечательнейшая»', short: 'Замечательнейшая', coins: 20, group: 'a1' },
+    { label: 'Активность «Любимый кот»', short: 'Любимый кот', coins: 30, group: 'a2' },
+    { label: 'Активность «Легенда сайта»', short: 'Легенда сайта', coins: 40, group: 'a3' },
+    { label: 'Активность «Ходячий миф»', short: 'Ходячий миф', coins: 50, group: 'a4' }
+];
+
+const ACT_FEATHERS = [
+    { key: 'синее перо',     one: 'синее перо',     few: 'синих пера',     many: 'синих перьев' },
+    { key: 'красное перо',   one: 'красное перо',   few: 'красных пера',   many: 'красных перьев' },
+    { key: 'чёрное перо',    one: 'чёрное перо',    few: 'чёрных пера',    many: 'чёрных перьев' }
+];
 
 const ACT_WATER = [
-    'ресурс на +15 ПУ',
-    'ресурс на +20 ПУ',
-    'ресурс на +28 ПУ',
-    'ресурс на +30 ПУ',
-    'ресурс на сон'
+    { key: 'ресурс на +15 ПУ', one: 'ресурс на +15 ПУ', few: 'ресурса на +15 ПУ', many: 'ресурсов на +15 ПУ' },
+    { key: 'ресурс на +20 ПУ', one: 'ресурс на +20 ПУ', few: 'ресурса на +20 ПУ', many: 'ресурсов на +20 ПУ' },
+    { key: 'ресурс на +28 ПУ', one: 'ресурс на +28 ПУ', few: 'ресурса на +28 ПУ', many: 'ресурсов на +28 ПУ' },
+    { key: 'ресурс на +30 ПУ', one: 'ресурс на +30 ПУ', few: 'ресурса на +30 ПУ', many: 'ресурсов на +30 ПУ' },
+    { key: 'ресурс на сон',    one: 'ресурс на сон',    few: 'ресурса на сон',    many: 'ресурсов на сон' }
 ];
 
 const ACT_HEAL = [
@@ -2031,8 +2038,62 @@ if (qs('actType')) {
 }
 if (qs('actHealDate')) qs('actHealDate').value = getMoscowDate();
 
-// --- Универсальная строка "селект + количество + ×" ---
-function addActRow(listId, selectOptions, optionsAreObjects = false) {
+// --- Строка без количества: селект + × ---
+function addActSelectRow(listId, options, optionsAreObjects) {
+    const list = qs(listId);
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'act-row';
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '1fr 32px';
+    row.style.gap = '6px';
+    row.style.alignItems = 'center';
+
+    const sel = document.createElement('select');
+    sel.className = 'act-row-select';
+    sel.style.height = '30px';
+    sel.style.fontSize = '12px';
+    options.forEach(opt => {
+        const o = document.createElement('option');
+        if (optionsAreObjects) {
+            o.value = opt.label;
+            o.textContent = opt.label;
+            if (opt.group) o.dataset.group = opt.group;
+            if (opt.coins !== undefined) o.dataset.coins = opt.coins;
+            if (opt.short) o.dataset.short = opt.short;
+        } else {
+            o.value = opt;
+            o.textContent = opt;
+        }
+        sel.appendChild(o);
+    });
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.textContent = '×';
+    del.title = 'Удалить';
+    del.style.height = '30px';
+    del.style.width = '32px';
+    del.style.padding = '0';
+    del.style.cursor = 'pointer';
+    del.style.fontSize = '16px';
+    del.style.lineHeight = '1';
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+    del.style.border = '1px solid var(--line)';
+    del.addEventListener('click', () => {
+        row.remove();
+        if (qs(listId).children.length === 0) addActSelectRow(listId, options, optionsAreObjects);
+    });
+
+    row.appendChild(sel);
+    row.appendChild(del);
+    list.appendChild(row);
+}
+
+// --- Строка с количеством (для перьев, воды, целебных) ---
+function addActCountRow(listId, options, optionsAreObjects) {
     const list = qs(listId);
     if (!list) return;
 
@@ -2047,13 +2108,11 @@ function addActRow(listId, selectOptions, optionsAreObjects = false) {
     sel.className = 'act-row-select';
     sel.style.height = '30px';
     sel.style.fontSize = '12px';
-    selectOptions.forEach(opt => {
+    options.forEach(opt => {
         const o = document.createElement('option');
         if (optionsAreObjects) {
-            o.value = opt.key;
-            o.textContent = opt.label || opt.key;
-            if (opt.group) o.dataset.group = opt.group;
-            if (opt.coins !== undefined) o.dataset.coins = opt.coins;
+            o.value = opt.one || opt.key || opt;
+            o.textContent = opt.one || opt.key || opt;
         } else {
             o.value = opt;
             o.textContent = opt;
@@ -2086,7 +2145,7 @@ function addActRow(listId, selectOptions, optionsAreObjects = false) {
     del.style.border = '1px solid var(--line)';
     del.addEventListener('click', () => {
         row.remove();
-        if (qs(listId).children.length === 0) addActRow(listId, selectOptions, optionsAreObjects);
+        if (qs(listId).children.length === 0) addActCountRow(listId, options, optionsAreObjects);
     });
 
     row.appendChild(sel);
@@ -2095,11 +2154,10 @@ function addActRow(listId, selectOptions, optionsAreObjects = false) {
     list.appendChild(row);
 }
 
-// --- Инициализация стартовых строк ---
+// --- Инициализация ---
 if (qs('actSkillsList')) {
-    qs('actSkillsAdd').addEventListener('click', () => addActRow('actSkillsList', ACT_SKILLS, true));
-    if (qs('actSkillsList').children.length === 0) addActRow('actSkillsList', ACT_SKILLS, true);
-    // Уникальность по группе
+    qs('actSkillsAdd').addEventListener('click', () => addActSelectRow('actSkillsList', ACT_SKILLS, true));
+    if (qs('actSkillsList').children.length === 0) addActSelectRow('actSkillsList', ACT_SKILLS, true);
     qs('actSkillsList').addEventListener('change', e => {
         if (!e.target.classList.contains('act-row-select')) return;
         const row = e.target.closest('.act-row');
@@ -2108,16 +2166,30 @@ if (qs('actSkillsList')) {
         qs('actSkillsList').querySelectorAll('.act-row').forEach(other => {
             if (other === row) return;
             const otherGroup = other.querySelector('.act-row-select')?.selectedOptions[0]?.dataset.group;
-            if (otherGroup === group) {
-                other.remove();
-            }
+            if (otherGroup === group) other.remove();
         });
-        if (qs('actSkillsList').children.length === 0) addActRow('actSkillsList', ACT_SKILLS, true);
+        if (qs('actSkillsList').children.length === 0) addActSelectRow('actSkillsList', ACT_SKILLS, true);
+    });
+}
+if (qs('actActivityList')) {
+    qs('actActivityAdd').addEventListener('click', () => addActSelectRow('actActivityList', ACT_ACTIVITY, true));
+    if (qs('actActivityList').children.length === 0) addActSelectRow('actActivityList', ACT_ACTIVITY, true);
+    qs('actActivityList').addEventListener('change', e => {
+        if (!e.target.classList.contains('act-row-select')) return;
+        const row = e.target.closest('.act-row');
+        const group = e.target.selectedOptions[0]?.dataset.group;
+        if (!group) return;
+        qs('actActivityList').querySelectorAll('.act-row').forEach(other => {
+            if (other === row) return;
+            const otherGroup = other.querySelector('.act-row-select')?.selectedOptions[0]?.dataset.group;
+            if (otherGroup === group) other.remove();
+        });
+        if (qs('actActivityList').children.length === 0) addActSelectRow('actActivityList', ACT_ACTIVITY, true);
     });
 }
 if (qs('actFeathersList')) {
-    qs('actFeathersAdd').addEventListener('click', () => addActRow('actFeathersList', ACT_FEATHERS));
-    if (qs('actFeathersList').children.length === 0) addActRow('actFeathersList', ACT_FEATHERS);
+    qs('actFeathersAdd').addEventListener('click', () => addActCountRow('actFeathersList', ACT_FEATHERS, false));
+    if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', ACT_FEATHERS, false);
     qs('actFeathersList').addEventListener('change', e => {
         if (!e.target.classList.contains('act-row-select')) return;
         const row = e.target.closest('.act-row');
@@ -2127,16 +2199,17 @@ if (qs('actFeathersList')) {
             const otherVal = other.querySelector('.act-row-select')?.value;
             if (otherVal === val) other.remove();
         });
-        if (qs('actFeathersList').children.length === 0) addActRow('actFeathersList', ACT_FEATHERS);
+        if (qs('actFeathersList').children.length === 0) addActCountRow('actFeathersList', ACT_FEATHERS, false);
     });
 }
 if (qs('actWaterList')) {
-    qs('actWaterAdd').addEventListener('click', () => addActRow('actWaterList', ACT_WATER));
-    if (qs('actWaterList').children.length === 0) addActRow('actWaterList', ACT_WATER);
+    qs('actWaterAdd').addEventListener('click', () => addActCountRow('actWaterList', ACT_WATER, false));
+    if (qs('actWaterList').children.length === 0) addActCountRow('actWaterList', ACT_WATER, false);
 }
 if (qs('actHealList')) {
-    qs('actHealAdd').addEventListener('click', () => addActRow('actHealList', ACT_HEAL.map(h => h.one), false));
-    if (qs('actHealList').children.length === 0) addActRow('actHealList', ACT_HEAL.map(h => h.one), false);
+    const healOptions = ACT_HEAL.map(h => ({ one: h.one }));
+    qs('actHealAdd').addEventListener('click', () => addActCountRow('actHealList', healOptions, true));
+    if (qs('actHealList').children.length === 0) addActCountRow('actHealList', healOptions, true);
     qs('actHealList').addEventListener('change', e => {
         if (!e.target.classList.contains('act-row-select')) return;
         const row = e.target.closest('.act-row');
@@ -2146,7 +2219,7 @@ if (qs('actHealList')) {
             const otherVal = other.querySelector('.act-row-select')?.value;
             if (otherVal === val) other.remove();
         });
-        if (qs('actHealList').children.length === 0) addActRow('actHealList', ACT_HEAL.map(h => h.one), false);
+        if (qs('actHealList').children.length === 0) addActCountRow('actHealList', healOptions, true);
     });
 }
 
@@ -2161,20 +2234,6 @@ function healResPlural(key, count) {
     else if (n1 === 1) word = entry.one;
     else if (n1 >= 2 && n1 <= 4) word = entry.few;
     return `${count} ${word}`;
-}
-
-// --- Сбор строк ---
-function collectActRows(listId, formatter) {
-    const list = qs(listId);
-    if (!list) return '';
-    const parts = [];
-    list.querySelectorAll('.act-row').forEach(row => {
-        const sel = row.querySelector('.act-row-select');
-        const cnt = row.querySelector('.act-row-count');
-        if (!sel) return;
-        parts.push(formatter(sel, cnt));
-    });
-    return parts.join(', ');
 }
 
 // --- Генерация отчёта ---
@@ -2203,56 +2262,87 @@ if (qs('actGenerate')) {
         } else if (t === 'skills') {
             const id = qs('actSkillsId').value.trim() || 'ID';
             const proof = qs('actSkillsProof').value.trim() || '-';
-            const skills = collectActRows('actSkillsList', (sel, cnt) => {
-                const coins = sel.selectedOptions[0]?.dataset.coins || 0;
-                return `${sel.value}`;
-            });
-            // Собираем "за что именно и сколько монет"
-            const details = [];
-            let total = 0;
+
+            // Собираем навыки
+            const skillParts = [];
+            let skillTotal = 0;
             qs('actSkillsList').querySelectorAll('.act-row').forEach(row => {
                 const sel = row.querySelector('.act-row-select');
-                const coins = Number(sel.selectedOptions[0]?.dataset.coins) || 0;
-                details.push(`${sel.value} — ${coins} монет`);
-                total += coins;
+                if (!sel) return;
+                const opt = sel.selectedOptions[0];
+                const coins = Number(opt.dataset.coins) || 0;
+                const short = opt.dataset.short || opt.value;
+                skillParts.push(`${short} - ${coins} монет`);
+                skillTotal += coins;
             });
-            const detailsStr = details.length > 0 ? details.join(', ') + `. Всего: ${total} монет` : '—';
-            result =
-`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за навыки/активность, (за что именно и сколько монет)
-Доказательства: [url=${proof}]скриншот[/url]
 
-Подробно:
-${detailsStr}`;
+            // Собираем активности
+            const actParts = [];
+            let actTotal = 0;
+            qs('actActivityList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                if (!sel) return;
+                const opt = sel.selectedOptions[0];
+                const coins = Number(opt.dataset.coins) || 0;
+                const short = opt.dataset.short || opt.value;
+                actParts.push(`${short} - ${coins} монет`);
+                actTotal += coins;
+            });
+
+            // Формируем блоки
+            const lines = [];
+            if (skillParts.length > 0) {
+                lines.push(`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за навыки. (${skillParts.join(', ')}. Всего: ${skillTotal})`);
+            }
+            if (actParts.length > 0) {
+                lines.push(`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за активность. (${actParts.join(', ')}. Всего: ${actTotal})`);
+            }
+            if (lines.length === 0) {
+                lines.push(`Я, [link${id}] [${id}], малыш шайки, выполнил требования и прошу выдать мне монетки за навыки/активность.`);
+            }
+            result = lines.join('\n') + `\nДоказательства: [url=${proof}]скриншот[/url]`;
         } else if (t === 'feathers') {
             const id = qs('actFeathersId').value.trim() || 'ID';
             const keeper = qs('actFeathersKeeperId').value.trim() || 'ID';
-            const parts = collectActRows('actFeathersList', (sel, cnt) => {
-                const n = cnt.value.trim() || '1';
-                return `${n} ${sel.value}`;
+            const parts = [];
+            qs('actFeathersList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                const cnt = row.querySelector('.act-row-count');
+                if (!sel) return;
+                const n = cnt ? cnt.value.trim() || '1' : '1';
+                parts.push(`${n} ${sel.value}`);
             });
             result =
-`Я, [link${id}] [${id}], собрал ${parts || 'название пера/перьев'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
+`Я, [link${id}] [${id}], собрал ${parts.join(', ') || 'название пера/перьев'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
         } else if (t === 'water') {
             const id = qs('actWaterId').value.trim() || 'ID';
             const keeper = qs('actWaterKeeperId').value.trim() || 'ID';
-            const parts = collectActRows('actWaterList', (sel, cnt) => {
-                const n = cnt.value.trim() || '1';
-                return `${n} ${sel.value}`;
+            const parts = [];
+            qs('actWaterList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                const cnt = row.querySelector('.act-row-count');
+                if (!sel) return;
+                const n = cnt ? cnt.value.trim() || '1' : '1';
+                parts.push(`${n} ${sel.value}`);
             });
             result =
-`Я, [link${id}] [${id}], собрал ресурсов на (кол-во ПУ, даваемое ресурсом/сон): ${parts}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
+`Я, [link${id}] [${id}], собрал ресурсов на (кол-во ПУ, даваемое ресурсом/сон): ${parts.join(', ') || 'название ресурса'}. Перед тем, как написать отчёт, я сдал их ответственному за сундук [link${keeper}] [${keeper}].`;
         } else if (t === 'heal_res') {
             const dateVal = qs('actHealDate').value.trim() || date;
             const id = qs('actHealId').value.trim() || 'ID';
-            const parts = collectActRows('actHealList', (sel, cnt) => {
+            const parts = [];
+            qs('actHealList').querySelectorAll('.act-row').forEach(row => {
+                const sel = row.querySelector('.act-row-select');
+                const cnt = row.querySelector('.act-row-count');
+                if (!sel) return;
                 const n = Number(cnt.value.trim()) || 1;
-                return healResPlural(sel.value, n);
+                parts.push(healResPlural(sel.value, n));
             });
             result =
 `[b]${dateVal}[/b]
 [b]Отчёт о сдаче целебных ресурсов.[/b]
 [link${id}] [${id}]
-[u]Кол-во и вид трав:[/u] ${parts || '1 ветка, 1 вьюнковый костоправ, 1 целебная водоросль, 1 трава от кашля/отравления/ран и другое.'}`;
+[u]Кол-во и вид трав:[/u] ${parts.join(', ') || '1 ветка, 1 вьюнковый костоправ, 1 целебная водоросль, 1 трава от кашля/отравления/ран и другое.'}`;
         }
 
         qs('actResult').value = result;

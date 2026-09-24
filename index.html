@@ -1188,7 +1188,63 @@
     </div>
   </div>
 </div>
-<div id="form-squad-clownfish" class="stack form-view hidden"><div class="card"><h2>Отряд Рыб-клоунов<span class="blog-links"> <a href="https://catwar.net/blog0" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog0" target="_blank">catwar.su</a></span></h2></div></div>
+<div id="form-squad-clownfish" class="stack form-view hidden">
+  <div class="card stack">
+    <h2>Отряд Рыб-клоунов<span class="blog-links"> <a href="https://catwar.net/blog0" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog0" target="_blank">catwar.su</a></span></h2>
+
+    <div class="grid">
+      <div class="full">
+        <label for="clownFestName">Название фестиваля</label>
+        <select id="clownFestName">
+          <option value="Фестиваль юности">Фестиваль юности</option>
+          <option value="Фестиваль чистого курса">Фестиваль чистого курса</option>
+          <option value="Время щедрого моря">Время щедрого моря</option>
+          <option value="Разгар жатвы">Разгар жатвы</option>
+          <option value="Фестиваль эскадры">Фестиваль эскадры</option>
+          <option value="Фестиваль острых когтей">Фестиваль острых когтей</option>
+          <option value="Пора пернатых крикунов">Пора пернатых крикунов</option>
+          <option value="Морские задорники">Морские задорники</option>
+          <option value="Преданные спутники">Преданные спутники</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="clownDateFrom">Дата начала (дд.мм.гг)</label>
+        <input id="clownDateFrom" type="text" placeholder="дд.мм.гг">
+      </div>
+      <div>
+        <label for="clownDateTo">Дата окончания (дд.мм.гг)</label>
+        <input id="clownDateTo" type="text" placeholder="дд.мм.гг">
+      </div>
+
+      <div class="full">
+        <label>Организаторы фестиваля (ID)</label>
+        <div id="clownOrganizers" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="clownOrganizersAdd" class="add-row-btn">+ Добавить организатора</button>
+        </div>
+      </div>
+
+      <div class="full">
+        <label>Победители фестиваля (ID)</label>
+        <div id="clownWinners" class="stack"></div>
+        <div style="margin-top: 6px;">
+          <button type="button" id="clownWinnersAdd" class="add-row-btn">+ Добавить победителя</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="clownGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="clownResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="clownResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
 <div id="form-sphere-guard" class="stack form-view hidden">
   <div class="card stack">
     <h2 id="guardTypeTitle">Охранная сфера<span class="blog-links"> <a href="https://catwar.net/blog755559" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog755559" target="_blank">catwar.su</a></span></h2>

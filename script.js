@@ -1581,6 +1581,215 @@ if (btnSeagulls) {
     };
 }
 
+// ===================== ОТРЯД ЛЕТУЧИХ РЫБ =====================
+const FF_TALES = {
+    'Маленькие': [
+        'Сказка о любви Воды и Песка',
+        'Безымянный',
+        'Сокровище море',
+        'Тыквоголовые демоны',
+        'Шётоп волны'
+    ],
+    'Средние': [
+        'Лунный групер донного ската',
+        'Последний долг судового врача',
+        'Звёздочка',
+        'Копуша',
+        'Пушистое одеяло'
+    ],
+    'Большие': [
+        'История старого Мрака',
+        'Легенда о ките который хотел стать бабочкой',
+        'И у жадности бывает лико',
+        'Новый дом',
+        'Море зовёт'
+    ]
+};
+
+function updateFfForm() {
+    const t = qs('ffType').value;
+    ['games', 'toys', 'lecture', 'tale'].forEach(key => {
+        document.querySelectorAll(`.ff-sub-${key}`).forEach(el =>
+            el.classList.toggle('hidden', t !== key));
+    });
+}
+
+function fillFfTaleTitles() {
+    const sizeEl = qs('ffTaleSize');
+    const titleEl = qs('ffTaleTitle');
+    if (!sizeEl || !titleEl) return;
+    const list = FF_TALES[sizeEl.value] || [];
+    titleEl.innerHTML = '';
+    list.forEach(t => {
+        const o = document.createElement('option');
+        o.value = t;
+        o.textContent = t;
+        titleEl.appendChild(o);
+    });
+}
+
+if (qs('ffType')) {
+    qs('ffType').onchange = updateFfForm;
+    updateFfForm();
+}
+if (qs('ffTaleSize')) {
+    qs('ffTaleSize').onchange = fillFfTaleTitles;
+    fillFfTaleTitles();
+}
+if (qs('ffGamesDate'))   qs('ffGamesDate').value   = getMoscowDate();
+if (qs('ffToysDate'))    qs('ffToysDate').value    = getMoscowDate();
+if (qs('ffLectureDate')) qs('ffLectureDate').value = getMoscowDate();
+if (qs('ffTaleDate'))    qs('ffTaleDate').value    = getMoscowDate();
+
+// --- Динамические строки "участник + монеты" ---
+function addFfParticipantRow(listId) {
+    const list = qs(listId);
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'ff-part-row';
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '1fr 90px 32px';
+    row.style.gap = '6px';
+    row.style.alignItems = 'center';
+
+    const idInp = document.createElement('input');
+    idInp.type = 'text';
+    idInp.placeholder = 'ID';
+    idInp.className = 'ff-part-id';
+    idInp.style.height = '30px';
+    idInp.style.padding = '2px 8px';
+    idInp.style.fontSize = '12px';
+    idInp.style.boxSizing = 'border-box';
+
+    const coinInp = document.createElement('input');
+    coinInp.type = 'number';
+    coinInp.min = '0';
+    coinInp.placeholder = '+монет';
+    coinInp.className = 'ff-part-coins';
+    coinInp.style.height = '30px';
+    coinInp.style.padding = '2px 6px';
+    coinInp.style.fontSize = '12px';
+    coinInp.style.boxSizing = 'border-box';
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.textContent = '×';
+    del.title = 'Удалить';
+    del.style.height = '30px';
+    del.style.width = '32px';
+    del.style.padding = '0';
+    del.style.cursor = 'pointer';
+    del.style.fontSize = '16px';
+    del.style.lineHeight = '1';
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+    del.style.border = '1px solid var(--line)';
+    del.addEventListener('click', () => {
+        row.remove();
+        if (qs(listId).children.length === 0) addFfParticipantRow(listId);
+    });
+
+    row.appendChild(idInp);
+    row.appendChild(coinInp);
+    row.appendChild(del);
+    list.appendChild(row);
+}
+
+if (qs('ffGamesAdd')) {
+    qs('ffGamesAdd').addEventListener('click', () => addFfParticipantRow('ffGamesParts'));
+}
+if (qs('ffLectureAdd')) {
+    qs('ffLectureAdd').addEventListener('click', () => addFfParticipantRow('ffLectureParts'));
+}
+if (qs('ffGamesParts') && qs('ffGamesParts').children.length === 0) addFfParticipantRow('ffGamesParts');
+if (qs('ffLectureParts') && qs('ffLectureParts').children.length === 0) addFfParticipantRow('ffLectureParts');
+
+// --- Сбор участников из динамических строк ---
+function collectFfParts(listId) {
+    const list = qs(listId);
+    if (!list) return '';
+    const rows = list.querySelectorAll('.ff-part-row');
+    const parts = [];
+    rows.forEach(row => {
+        const id = row.querySelector('.ff-part-id').value.trim();
+        const coins = row.querySelector('.ff-part-coins').value.trim() || '0';
+        if (id) parts.push(`[link${id}] [${id}] (+${coins} монет)`);
+    });
+    return parts.join(', ') || '[linkID] [ID] (+0 монет)';
+}
+
+// --- Формат времени "N часов M минут" ---
+function formatDurationFromRange(timeRange) {
+    const diff = calculateTimeDifference(timeRange);
+    const h = Math.floor(diff.minutes / 60);
+    const m = diff.minutes % 60;
+    if (h > 0 && m > 0) return `${h} ${h === 1 ? 'час' : (h < 5 ? 'часа' : 'часов')} ${m} ${m === 1 ? 'минута' : (m < 5 ? 'минуты' : 'минут')}`;
+    if (h > 0) return `${h} ${h === 1 ? 'час' : (h < 5 ? 'часа' : 'часов')}`;
+    if (m > 0) return `${m} ${m === 1 ? 'минута' : (m < 5 ? 'минуты' : 'минут')}`;
+    return '0 минут';
+}
+
+// --- Генерация отчёта ---
+if (qs('ffGenerate')) {
+    qs('ffGenerate').onclick = () => {
+        const t = qs('ffType').value;
+        let result = '';
+
+        if (t === 'games') {
+            const date = qs('ffGamesDate').value.trim() || getMoscowDate();
+            const time = qs('ffGamesTime').value.trim() || 'чч:мм - чч:мм';
+            const durText = formatDurationFromRange(time);
+            const lead = qs('ffGamesLead').value.trim() || 'ID';
+            const parts = collectFfParts('ffGamesParts');
+            result =
+`[b]Игры.[/b] ${date}
+[b]Время:[/b] ${time} (${durText})
+[b]Ведущий:[/b] [link${lead}] [${lead}]
+[b]Участники:[/b] ${parts}`;
+        } else if (t === 'toys') {
+            const date = qs('ffToysDate').value.trim() || getMoscowDate();
+            const creator = qs('ffToysCreator').value.trim() || 'ID';
+            const count = qs('ffToysCount').value.trim() || '0';
+            const proof = qs('ffToysProof').value.trim() || '-';
+            result =
+`[b]Создание игрушек.[/b] ${date}
+[b]Создающий:[/b] [link${creator}] [${creator}] (${count} игрушек)
+[b]Доказательства:[/b] [url=${proof}]скриншот[/url]`;
+        } else if (t === 'lecture') {
+            const date = qs('ffLectureDate').value.trim() || getMoscowDate();
+            const time = qs('ffLectureTime').value.trim() || 'чч:мм';
+            const lead = qs('ffLectureLead').value.trim() || 'ID';
+            const topic = qs('ffLectureTopic').value;
+            const parts = collectFfParts('ffLectureParts');
+            result =
+`[b]${date} | ${time}[/b]
+[b]Отчёт о проведённой лекции:[/b]
+[b]Ведущий:[/b] [link${lead}] [${lead}]
+[b]Тема лекции:[/b] ${topic}
+[b]Участники:[/b] ${parts}`;
+        } else if (t === 'tale') {
+            const date = qs('ffTaleDate').value.trim() || getMoscowDate();
+            const time = qs('ffTaleTime').value.trim() || 'чч:мм';
+            const lead = qs('ffTaleLead').value.trim() || 'ID';
+            const size = qs('ffTaleSize').value;
+            const title = qs('ffTaleTitle').value;
+            const rawIds = qs('ffTaleParts').value.trim().split(/\s+/).filter(Boolean);
+            const parts = rawIds.length > 0
+                ? rawIds.map(id => `[link${id}] [${id}] (+20 монет)`).join(', ')
+                : '[linkID] [ID] (+20 монет)';
+            result =
+`[b]${date} | ${time}[/b]
+[b]Отчёт о рассказанной сказке:[/b]
+[b]Ведущий:[/b] [link${lead}] [${lead}]
+[b]Тема/размер сказки:[/b] ${title} (${size})
+[b]Участники:[/b] ${parts}`;
+        }
+
+        qs('ffResult').value = result;
+    };
+}
+
 // ===================== ПОДСЧЁТ СЛОВ =====================
 const calcInput = qs('calcInput');
 const calcResult = qs('calcResult');

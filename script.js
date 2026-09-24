@@ -2534,13 +2534,20 @@ if (qs('codexGenerate')) {
         const id = qs('codexViolatorId').value.trim() || 'ID';
         const rule = qs('codexRule').value || 'правило';
         const point = qs('codexPoint').value || '—';
-        const proof = qs('codexProof').value.trim() || 'скриншот';
-        const result =
+const proofRaw = qs('codexProof').value.trim();
+let proof = 'скриншот';
+if (proofRaw) {
+    const links = proofRaw.split(/\s+/).filter(Boolean);
+    proof = `[url=${links[0]}]скриншот[/url]`;
+    for (let i = 1; i < links.length; i++) {
+        proof += ` [url=${links[i]}]скриншот${i + 1}[/url]`;
+    }
+}
+const result =
 `[b]Лёгкое нарушение[/b], ${date}
 [b]Нарушитель:[/b] [link${id}] [${id}]
 [b]Правило:[/b] ${rule}
 [b]Пункт:[/b] ${point}
 [b]Доказательства:[/b] ${proof}`;
-        qs('codexResult').value = result;
     };
 }

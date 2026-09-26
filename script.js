@@ -1018,7 +1018,7 @@ if (qs('albDoneRole')) qs('albDoneRole').onchange = () => {
     const isCollab = r.startsWith('коллаб');
     qs('albDonePartner2Wrap').classList.toggle('hidden', !isCollab);
     qs('albDoneCountWrap').classList.toggle('hidden', r !== 'сборщик');
-    qs('albDoneContentWrap').classList.toggle('hidden', !['художник', 'поздравитель', 'коллаб_художники'].includes(r));
+    qs('albDoneContentWrap').classList.toggle('hidden', !['поздравитель', 'стихотворец'].includes(r));
     if (qs('albDoneStagesWrap')) qs('albDoneStagesWrap').classList.toggle('hidden', !isCollab);
 
     // 2 колонки для не-коллабов, 3 — для коллабов
@@ -1141,11 +1141,16 @@ ${qs('albEditText').value.trim() || '—'}`;
         };
         const action = actionMap[r] || 'работу';
 
+        // Текст из поля "Доказательства / Текст / Файл"
+        const contentText = qs('albDoneContent') ? qs('albDoneContent').value.trim() : '';
+
         // Концовки — только для определённых ролей
         const endingsMap = {
             'оформитель': 'Код в личных сообщениях главы.',
             'коллаб_оформители': 'Код в личных сообщениях главы.',
-            'сборщик': `Опросил ${qs('albDoneCount').value || 0} игроков.`
+            'сборщик': `Опросил ${qs('albDoneCount').value || 0} игроков.`,
+            'поздравитель': contentText,
+            'стихотворец': contentText
         };
         const ending = endingsMap[r] || '';
 

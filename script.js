@@ -1144,16 +1144,14 @@ ${qs('albEditText').value.trim() || '—'}`;
 
         if (r.startsWith('коллаб')) {
             const ending = r === 'коллаб_художники'
-                ? '(рисунок, прикреплённый ВК документом)'
-                : 'Код в личных сообщениях главы.';
+                ? 'Код в личных сообщениях главы.';
             const both = p2 ? `${p1}; ${p2}.` : `${p1}.`;
             res = `#итог — выполнили ${action} для игрока ${target}.\n${both}\n${ending}`;
         } else {
             let ending = '';
             if (r === 'оформитель') ending = 'Код в личных сообщениях главы.';
             else if (r === 'сборщик') ending = `Опросил ${qs('albDoneCount').value || 0} игроков.`;
-            else if (r === 'художник') ending = `(рисунок, прикреплённый ВК документом)\n${qs('albDoneContent').value.trim() || '-'}`;
-            else ending = qs('albDoneContent').value.trim() || '-';
+            else ending = qs('albDoneContent').value.trim() || ' ';
             res = `#итог — ${name} [${id}] выполнил ${action} для игрока ${target}.\n${ending}`.trim();
         }
     }

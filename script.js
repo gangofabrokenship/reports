@@ -1015,10 +1015,15 @@ if (qs('albBookRole')) qs('albBookRole').onchange = () => {
 };
 if (qs('albDoneRole')) qs('albDoneRole').onchange = () => {
     const r = qs('albDoneRole').value;
-    qs('albDonePartner2Wrap').classList.toggle('hidden', !r.startsWith('коллаб'));
+    const isCollab = r.startsWith('коллаб');
+    qs('albDonePartner2Wrap').classList.toggle('hidden', !isCollab);
     qs('albDoneCountWrap').classList.toggle('hidden', r !== 'сборщик');
     qs('albDoneContentWrap').classList.toggle('hidden', !['художник', 'поздравитель', 'коллаб_художники'].includes(r));
+    if (qs('albDoneStagesWrap')) qs('albDoneStagesWrap').classList.toggle('hidden', !isCollab);
 };
+// Начальный вызов, чтобы при первой загрузке стадии были скрыты
+if (qs('albDoneRole')) qs('albDoneRole').onchange();
+
 if (qs('albGenerate')) qs('albGenerate').onclick = () => {
     const c = qs('albCategory').value;
     let res = '';
@@ -1089,46 +1094,45 @@ ${qs('albEditText').value.trim() || '—'}`;
             if (r === 'коллаж') action = `коллаж (${qs('albBookCollageCount').value || 1})`;
             res = `#бронирование — ${name} [${id}]\nБерусь за ${action} для игрока ${tName} [${tId}].`;
         }
-  } else if (c === 'vk_done') {
-    const r = qs('albDoneRole').value;
-    const name = valAlb('albDoneName');
-    const id = valAlb('albDoneId');
-    const tName = valAlb('albDoneTargetName');
-    const tId = valAlb('albDoneTargetId');
-    const target = `${tName} [${tId}]`;
+    } else if (c === 'vk_done') {
+        const r = qs('albDoneRole').value;
+        const name = valAlb('albDoneName');
+        const id = valAlb('albDoneId');
+        const tName = valAlb('albDoneTargetName');
+        const tId = valAlb('albDoneTargetId');
+        const target = `${tName} [${tId}]`;
 
-    // Первый участник: количество стадий из селекта
-    const stages1 = qs('albDoneStages') ? qs('albDoneStages').value : '4';
-    const p1 = `${name} [${id}] сделал ${stages1} стадии работы`;
+        const stages1 = qs('albDoneStages') ? qs('albDoneStages').value : '4';
+        const p1 = `${name} [${id}] сделал ${stages1} стадии работы`;
 
-    // Второй участник (если есть)
-    const p2Name = qs('albDonePartner2Name') ? qs('albDonePartner2Name').value.trim() : '';
-    const p2Id = qs('albDonePartner2Id') ? qs('albDonePartner2Id').value.trim() : '';
-    const p2Stages = qs('albDonePartner2Stages') ? qs('albDonePartner2Stages').value : '3';
-    const p2 = (p2Name || p2Id)
-      ? `${p2Name || 'Имя'} [${p2Id || 'ID'}] сделал ${p2Stages} стадии работы`
-      : '';
+        const p2Name = qs('albDonePartner2Name') ? qs('albDonePartner2Name').value.trim() : '';
+        const p2Id = qs('albDonePartner2Id') ? qs('albDonePartner2Id').value.trim() : '';
+        const p2Stages = qs('albDonePartner2Stages') ? qs('albDonePartner2Stages').value : '3';
+        const p2 = (p2Name || p2Id)
+            ? `${p2Name || 'Имя'} [${p2Id || 'ID'}] сделал ${p2Stages} стадии работы`
+            : '';
 
-    if (r.startsWith('коллаб')) {
-      const actionMap = {
-        'коллаб_художники': 'рисунок',
-        'коллаб_оформители': 'оформление'
-      };
-      const action = actionMap[r] || 'работу';
-      const ending = r === 'коллаб_художники'
-        ? '(рисунок, прикреплённый ВК документом)'
-        : 'Код в личных сообщениях главы.';
-      const both = p2 ? `${p1}; ${p2}.` : `${p1}.`;
-      res = `#итог — выполнили ${action} для игрока ${target}.\n${both}\n${ending}`;
-    } else {
-      let ending = '';
-      if (r === 'оформитель') ending = 'Код в личных сообщениях главы.';
-      else if (r === 'сборщик') ending = `Опросил ${qs('albDoneCount').value || 0} игроков.`;
-      else if (r === 'художник') ending = `(рисунок, прикреплённый ВК документом)\n${qs('albDoneContent').value.trim() || '-'}`;
-      else ending = qs('albDoneContent').value.trim() || '-';
-      res = `#итог — ${name} [${id}] выполнил работу для игрока ${target}.\n${ending}`.trim();
+        if (r.startsWith('коллаб')) {
+            const actionMap = {
+                'коллаб_художники': 'рисунок',
+                'коллаб_оформители': 'оформление'
+            };
+            const action = actionMap[r] || 'работу';
+            const ending = r === 'коллаб_художники'
+                ? '(рисунок, прикреплённый ВК документом)'
+                : 'Код в личных сообщениях главы.';
+            const both = p2 ? `${p1}; ${p2}.` : `${p1}.`;
+            res = `#итог — выполнили ${action} для игрока ${target}.\n${both}\n${ending}`;
+        } else {
+            let ending = '';
+            if (r === 'оформитель') ending = 'Код в личных сообщениях главы.';
+            else if (r === 'сборщик') ending = `Опросил ${qs('albDoneCount').value || 0} игроков.`;
+            else if (r === 'художник') ending = `(рисунок, прикреплённый ВК документом)\n${qs('albDoneContent').value.trim() || '-'}`;
+            else ending = qs('albDoneContent').value.trim() || '-';
+            res = `#итог — ${name} [${id}] выполнил работу для игрока ${target}.\n${ending}`.trim();
+        }
     }
-  }
+    qs('albResult').value = res;
 };
 
 // ===================== ОТРЯД ДЕЛЬФИНОВ =====================

@@ -1135,7 +1135,7 @@
             <option value="коллаб_оформители">Коллаб оформителей</option>
           </select>
         </div>
-        <div class="grid">
+        <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
           <div>
             <label for="albDoneName">Ваше имя</label>
             <input id="albDoneName" type="text" class="save-name" placeholder="Имя">
@@ -1144,7 +1144,7 @@
             <label for="albDoneId">Ваш ID</label>
             <input id="albDoneId" type="text" class="save-id" placeholder="123456">
           </div>
-          <div>
+          <div id="albDoneStagesWrap" class="hidden">
             <label for="albDoneStages">Стадии</label>
             <select id="albDoneStages">
               <option value="1">1</option>

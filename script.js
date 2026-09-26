@@ -1144,7 +1144,7 @@ ${qs('albEditText').value.trim() || '—'}`;
 
         if (r.startsWith('коллаб')) {
             const ending = r === 'коллаб_художники'
-                ? 'Код в личных сообщениях главы.';
+                : 'Код в личных сообщениях главы.';
             const both = p2 ? `${p1}; ${p2}.` : `${p1}.`;
             res = `#итог — выполнили ${action} для игрока ${target}.\n${both}\n${ending}`;
         } else {

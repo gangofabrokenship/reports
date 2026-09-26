@@ -1126,7 +1126,6 @@ ${qs('albEditText').value.trim() || '—'}`;
             ? `${p2Name || 'Имя'} [${p2Id || 'ID'}] сделал ${p2Stages} стадии работы`
             : '';
 
-        // Слово-действие для каждой роли
         const actionMap = {
             'оформитель': 'оформление',
             'коллажист': 'коллаж',
@@ -1142,17 +1141,21 @@ ${qs('albEditText').value.trim() || '—'}`;
         };
         const action = actionMap[r] || 'работу';
 
+        // Концовки — только для определённых ролей
+        const endingsMap = {
+            'оформитель': 'Код в личных сообщениях главы.',
+            'коллаб_оформители': 'Код в личных сообщениях главы.',
+            'сборщик': `Опросил ${qs('albDoneCount').value || 0} игроков.`
+        };
+        const ending = endingsMap[r] || '';
+
         if (r.startsWith('коллаб')) {
-            const ending = r === 'коллаб_художники'
-                : 'Код в личных сообщениях главы.';
             const both = p2 ? `${p1}; ${p2}.` : `${p1}.`;
-            res = `#итог — выполнили ${action} для игрока ${target}.\n${both}\n${ending}`;
+            const endingBlock = ending ? `\n${ending}` : '';
+            res = `#итог — выполнили ${action} для игрока ${target}.\n${both}${endingBlock}`;
         } else {
-            let ending = '';
-            if (r === 'оформитель') ending = 'Код в личных сообщениях главы.';
-            else if (r === 'сборщик') ending = `Опросил ${qs('albDoneCount').value || 0} игроков.`;
-            else ending = qs('albDoneContent').value.trim() || ' ';
-            res = `#итог — ${name} [${id}] выполнил ${action} для игрока ${target}.\n${ending}`.trim();
+            const endingBlock = ending ? `\n${ending}` : '';
+            res = `#итог — ${name} [${id}] выполнил ${action} для игрока ${target}.${endingBlock}`;
         }
     }
     qs('albResult').value = res;

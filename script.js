@@ -1020,6 +1020,14 @@ if (qs('albDoneRole')) qs('albDoneRole').onchange = () => {
     qs('albDoneCountWrap').classList.toggle('hidden', r !== 'сборщик');
     qs('albDoneContentWrap').classList.toggle('hidden', !['художник', 'поздравитель', 'коллаб_художники'].includes(r));
     if (qs('albDoneStagesWrap')) qs('albDoneStagesWrap').classList.toggle('hidden', !isCollab);
+
+    // 2 колонки для не-коллабов, 3 — для коллабов
+    const nameRow = qs('albDoneNameRow');
+    if (nameRow) {
+        nameRow.style.gridTemplateColumns = isCollab
+            ? 'repeat(3, minmax(0, 1fr))'
+            : 'repeat(2, minmax(0, 1fr))';
+    }
 };
 // Начальный вызов, чтобы при первой загрузке стадии были скрыты
 if (qs('albDoneRole')) qs('albDoneRole').onchange();

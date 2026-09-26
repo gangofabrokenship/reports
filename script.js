@@ -1028,6 +1028,12 @@ if (qs('albDoneRole')) qs('albDoneRole').onchange = () => {
             ? 'repeat(3, minmax(0, 1fr))'
             : 'repeat(2, minmax(0, 1fr))';
     }
+
+        // Напарник — всегда 3 колонки
+    const partnerRow = qs('albDonePartner2Wrap');
+    if (partnerRow) {
+        partnerRow.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+    }
 };
 // Начальный вызов, чтобы при первой загрузке стадии были скрыты
 if (qs('albDoneRole')) qs('albDoneRole').onchange();

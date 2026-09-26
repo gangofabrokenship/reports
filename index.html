@@ -944,22 +944,24 @@
     </div>
   </div>
 </div>
+
+               <!-- ===== АЛЬБАТРОСЫ ===== -->     
 <div id="form-squad-albatross" class="stack form-view hidden">
-  <div class="card stack"> 
+  <div class="card stack">
     <h2>Отряд Альбатросов<span class="blog-links"> <a href="https://catwar.net/blog731079" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog731079" target="_blank">catwar.su</a></span></h2>
     <div class="grid">
       <div class="full">
         <label for="albCategory">Вид отчёта</label>
         <select id="albCategory">
           <option value="congrat_report">Отчёт о поздравительном блоге</option>
-             <option value="vk_booking">ВК: Бронирование</option>
+          <option value="vk_booking">ВК: Бронирование</option>
           <option value="vk_done">ВК: Завершение работы</option>
           <option value="anketa_blog">Запись в таблицу С блогом</option>
           <option value="anketa_noblog">Запись в таблицу БЕЗ блога</option>
           <option value="edit_prefs">Редактирование предпочтений</option>
         </select>
       </div>
-      
+
       <div id="albCongratWrap" class="stack full">
         <div class="grid">
           <div class="full">
@@ -1190,9 +1192,14 @@
         <div id="albDoneCountWrap" class="full hidden">
           <label for="albDoneCount">Количество опрошенных игроков</label>
           <input id="albDoneCount" type="number" placeholder="5">
+        </div>
+        <div id="albDoneContentWrap" class="full hidden">
+          <label for="albDoneContent">Доказательства / Текст / Файл</label>
+          <textarea id="albDoneContent" placeholder="Текст поздравления или прикреплённый документ"></textarea>
+        </div>
       </div>
     </div>
-    
+
     <div class="actions">
       <button class="primary" id="albGenerate">Составить отчёт</button>
     </div>

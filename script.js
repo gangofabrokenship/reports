@@ -1701,7 +1701,6 @@ if (qs('ffToysDate'))    qs('ffToysDate').value    = getMoscowDate();
 if (qs('ffLectureDate')) qs('ffLectureDate').value = getMoscowDate();
 if (qs('ffTaleDate'))    qs('ffTaleDate').value    = getMoscowDate();
 
-// --- Динамические строки "участник + монеты" ---
 function addFfParticipantRow(listId) {
     const list = qs(listId);
     if (!list) return;
@@ -1709,7 +1708,9 @@ function addFfParticipantRow(listId) {
     const row = document.createElement('div');
     row.className = 'ff-part-row';
     row.style.display = 'grid';
-    row.style.gridTemplateColumns = '1fr 90px 32px';
+    // Если это лекция (ID ffLectureParts), делаем 2 колонки: ID и галочка. Иначе 3 колонки: ID, монеты, крестик.
+    const isLecture = (listId === 'ffLectureParts');
+    row.style.gridTemplateColumns = isLecture ? '1fr 90px 32px' : '1fr 90px 32px';
     row.style.gap = '6px';
     row.style.alignItems = 'center';
 
@@ -1722,15 +1723,45 @@ function addFfParticipantRow(listId) {
     idInp.style.fontSize = '12px';
     idInp.style.boxSizing = 'border-box';
 
-    const coinInp = document.createElement('input');
-    coinInp.type = 'number';
-    coinInp.min = '0';
-    coinInp.placeholder = '+монет';
-    coinInp.className = 'ff-part-coins';
-    coinInp.style.height = '30px';
-    coinInp.style.padding = '2px 6px';
-    coinInp.style.fontSize = '12px';
-    coinInp.style.boxSizing = 'border-box';
+    if (isLecture) {
+        // Создаем чекбокс "Вопросы" вместо поля с монетами
+        const qWrap = document.createElement('label');
+        qWrap.style.display = 'flex';
+        qWrap.style.alignItems = 'center';
+        qWrap.style.justifyContent = 'center';
+        qWrap.style.fontSize = '11px';
+        qWrap.style.cursor = 'pointer';
+        qWrap.style.height = '30px';
+        qWrap.style.background = 'rgba(0,0,0,0.03)';
+        qWrap.style.border = '1px solid var(--line)';
+        qWrap.style.borderRadius = '2px';
+        qWrap.style.gap = '4px';
+
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.className = 'ff-part-questions';
+        chk.style.cursor = 'pointer';
+
+        qWrap.appendChild(chk);
+        qWrap.appendChild(document.createTextNode('Вопросы'));
+
+        row.appendChild(idInp);
+        row.appendChild(qWrap);
+    } else {
+        // Старый вариант с монетами (для игр)
+        const coinInp = document.createElement('input');
+        coinInp.type = 'number';
+        coinInp.min = '0';
+        coinInp.placeholder = '+монет';
+        coinInp.className = 'ff-part-coins';
+        coinInp.style.height = '30px';
+        coinInp.style.padding = '2px 6px';
+        coinInp.style.fontSize = '12px';
+        coinInp.style.boxSizing = 'border-box';
+
+        row.appendChild(idInp);
+        row.appendChild(coinInp);
+    }
 
     const del = document.createElement('button');
     del.type = 'button';
@@ -1750,8 +1781,6 @@ function addFfParticipantRow(listId) {
         if (qs(listId).children.length === 0) addFfParticipantRow(listId);
     });
 
-    row.appendChild(idInp);
-    row.appendChild(coinInp);
     row.appendChild(del);
     list.appendChild(row);
 }
@@ -1773,10 +1802,20 @@ function collectFfParts(listId) {
     const parts = [];
     rows.forEach(row => {
         const id = row.querySelector('.ff-part-id').value.trim();
-        const coins = row.querySelector('.ff-part-coins').value.trim() || '0';
-        if (id) parts.push(`[link${id}] [${id}] (+${coins} монет)`);
+        if (!id) return;
+
+        if (listId === 'ffLectureParts') {
+            // Для лекции считаем: 20 базовых + 15, если стоит галочка
+            const isQuestion = row.querySelector('.ff-part-questions')?.checked;
+            const coins = isQuestion ? 35 : 20;
+            parts.push(`[link${id}] [${id}] (+${coins} монет)`);
+        } else {
+            // Для игр оставляем старую логику
+            const coins = row.querySelector('.ff-part-coins').value.trim() || '0';
+            parts.push(`[link${id}] [${id}] (+${coins} монет)`);
+        }
     });
-    return parts.join(', ') || '[linkID] [ID] (+0 монет)';
+    return parts.join(', ') || '[linkID] [ID] (+20 монет)';
 }
 
 // --- Формат времени "N часов M минут" ---

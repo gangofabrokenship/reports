@@ -1710,32 +1710,11 @@ function addFfParticipantRow(listId) {
     row.style.display = 'grid';
     const isLecture = (listId === 'ffLectureParts');
     
-    // Если лекция: 1 колонка под ID, 1 колонка под чекбокс, 1 под крестик
-    row.style.gridTemplateColumns = isLecture ? '1fr 70px 32px' : '1fr 90px 32px';
+    // Для лекции: [Поле ID] [Чекбокс] [Крестик]
+    row.style.gridTemplateColumns = isLecture ? '1fr 40px 32px' : '1fr 90px 32px';
     row.style.gap = '6px';
-    row.style.alignItems = 'end'; // Выравниваем элементы по нижнему краю (по полю ввода)
-    row.style.marginBottom = '8px';
-
-    const leftCol = document.createElement('div');
-    leftCol.style.display = 'flex';
-    leftCol.style.flexDirection = 'column';
-    leftCol.style.gap = '4px';
-
-    if (isLecture) {
-        const topLabel = document.createElement('div');
-        topLabel.style.fontSize = '9px';
-        topLabel.style.textTransform = 'uppercase';
-        topLabel.style.opacity = '0.65';
-        topLabel.style.letterSpacing = '0.3px';
-        topLabel.style.height = '14px'; // Фиксируем высоту, чтобы поля ввода не прыгали
-        topLabel.textContent = 'Вопросы';
-        leftCol.appendChild(topLabel);
-    } else {
-        // Пустой блок для выравнивания, если это не лекция
-        const emptySpace = document.createElement('div');
-        emptySpace.style.height = '14px';
-        leftCol.appendChild(emptySpace);
-    }
+    row.style.alignItems = 'center';
+    row.style.marginBottom = '6px';
 
     const idInp = document.createElement('input');
     idInp.type = 'text';
@@ -1745,74 +1724,19 @@ function addFfParticipantRow(listId) {
     idInp.style.padding = '2px 8px';
     idInp.style.fontSize = '12px';
     idInp.style.boxSizing = 'border-box';
-    idInp.style.width = '100%';
-    leftCol.appendChild(idInp);
-    row.appendChild(leftCol);
+    row.appendChild(idInp);
 
     if (isLecture) {
-        const centerCol = document.createElement('div');
-        centerCol.style.display = 'flex';
-        centerCol.style.flexDirection = 'column';
-        centerCol.style.gap = '4px';
-
-        const topLabelSpacer = document.createElement('div');
-        topLabelSpacer.style.fontSize = '9px';
-        topLabelSpacer.style.textTransform = 'uppercase';
-        topLabelSpacer.style.opacity = '0';
-        topLabelSpacer.style.height = '14px';
-        topLabelSpacer.textContent = 'X'; // Невидимый текст для высоты
-
-        const label = document.createElement('label');
-        // Прописываем стили напрямую, чтобы чекбокс точно отобразился
-        label.style.display = 'flex';
-        label.style.alignItems = 'center';
-        label.style.justifyContent = 'center';
-        label.style.cursor = 'pointer';
-        label.style.height = '30px';
-        label.style.width = '100%';
-        label.style.background = 'var(--bg)';
-        label.style.border = '1px solid var(--line)';
-        label.style.borderRadius = '2px';
-        label.style.margin = '0';
-        label.style.transition = 'all 0.2s ease';
-
+        // Создаем только чекбокс, без текста
         const chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.className = 'ff-part-questions';
-        chk.style.position = 'absolute';
-        chk.style.opacity = '0';
+        chk.style.width = '20px';
+        chk.style.height = '20px';
+        chk.style.margin = '0 auto'; // Центрируем внутри колонки
         chk.style.cursor = 'pointer';
-
-        const box = document.createElement('div');
-        box.className = 'custom-chk-box';
-        box.style.width = '18px';
-        box.style.height = '18px';
-        box.style.display = 'flex';
-        box.style.alignItems = 'center';
-        box.style.justifyContent = 'center';
-        box.style.transition = 'all 0.2s ease';
-        box.style.borderRadius = '2px';
-        box.style.color = 'transparent';
-        box.innerHTML = `<svg viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; stroke-width: 3; fill: none;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-
-        chk.addEventListener('change', () => {
-            if (chk.checked) {
-                label.style.background = 'var(--accent, #b8860b)';
-                label.style.borderColor = 'var(--accent, #b8860b)';
-                box.style.color = 'white'; 
-            } else {
-                label.style.background = 'var(--bg, #e6dfc8)';
-                label.style.borderColor = 'var(--line, #c8bca0)';
-                box.style.color = 'transparent';
-            }
-        });
-
-        label.appendChild(chk);
-        label.appendChild(box);
-
-        centerCol.appendChild(topLabelSpacer);
-        centerCol.appendChild(label);
-        row.appendChild(centerCol);
+        chk.style.accentColor = 'var(--accent)'; // Золотистый цвет при нажатии
+        row.appendChild(chk);
     } else {
         const coinInp = document.createElement('input');
         coinInp.type = 'number';
@@ -1823,7 +1747,6 @@ function addFfParticipantRow(listId) {
         coinInp.style.padding = '2px 6px';
         coinInp.style.fontSize = '12px';
         coinInp.style.boxSizing = 'border-box';
-        coinInp.style.width = '100%';
         row.appendChild(coinInp);
     }
 
@@ -1837,9 +1760,9 @@ function addFfParticipantRow(listId) {
     del.style.cursor = 'pointer';
     del.style.fontSize = '16px';
     del.style.lineHeight = '1';
-    del.style.background = 'var(--bg, #e6dfc8)';
-    del.style.color = 'var(--muted, #8d6e63)';
-    del.style.border = '1px solid var(--line, #c8bca0)';
+    del.style.background = 'var(--bg)';
+    del.style.color = 'var(--muted)';
+    del.style.border = '1px solid var(--line)';
     
     del.addEventListener('click', () => {
         row.remove();

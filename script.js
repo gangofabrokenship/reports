@@ -1833,14 +1833,12 @@ if (qs('ffGenerate')) {
             const time = qs('ffTaleTime').value.trim() || 'чч:мм';
             const lead = qs('ffTaleLead').value.trim() || 'ID';
             
-            // Берем значение из селекта, переводим в нижний регистр и убираем "ие"/"ие" на "яя"
-            let sizeRaw = qs('ffTaleSize').value.toLowerCase(); 
-            let size = sizeRaw.replace('ие', 'яя').replace('ие', 'яя'); // На всякий случай
+            const sizeSelect = qs('ffTaleSize');
+            const selectedText = sizeSelect.options[sizeSelect.selectedIndex].text;
             
-            // Более надежный способ подгонки под нужные слова:
-            if (sizeRaw.includes('маленьк')) size = 'маленькая';
-            else if (sizeRaw.includes('средн')) size = 'средняя';
-            else if (sizeRaw.includes('больш')) size = 'большая';
+            let size = 'маленькая';
+            if (selectedText.toLowerCase().includes('средн')) size = 'средняя';
+            if (selectedText.toLowerCase().includes('больш')) size = 'большая';
 
             const title = qs('ffTaleTitle').value;
             const rawIds = qs('ffTaleParts').value.trim().split(/\s+/).filter(Boolean);

@@ -1708,11 +1708,25 @@ function addFfParticipantRow(listId) {
     const row = document.createElement('div');
     row.className = 'ff-part-row';
     row.style.display = 'grid';
-    // Если это лекция (ID ffLectureParts), делаем 2 колонки: ID и галочка. Иначе 3 колонки: ID, монеты, крестик.
     const isLecture = (listId === 'ffLectureParts');
-    row.style.gridTemplateColumns = isLecture ? '1fr 90px 32px' : '1fr 90px 32px';
+    row.style.gridTemplateColumns = '1fr 90px 32px';
     row.style.gap = '6px';
-    row.style.alignItems = 'center';
+    row.style.alignItems = 'start';
+
+    const leftCol = document.createElement('div');
+    leftCol.style.display = 'flex';
+    leftCol.style.flexDirection = 'column';
+    leftCol.style.gap = '4px';
+
+    if (isLecture) {
+        const topLabel = document.createElement('div');
+        topLabel.style.fontSize = '9px';
+        topLabel.style.textTransform = 'uppercase';
+        topLabel.style.opacity = '0.65';
+        topLabel.style.letterSpacing = '0.3px';
+        topLabel.textContent = 'Вопросы';
+        leftCol.appendChild(topLabel);
+    }
 
     const idInp = document.createElement('input');
     idInp.type = 'text';
@@ -1722,33 +1736,31 @@ function addFfParticipantRow(listId) {
     idInp.style.padding = '2px 8px';
     idInp.style.fontSize = '12px';
     idInp.style.boxSizing = 'border-box';
+    leftCol.appendChild(idInp);
+    row.appendChild(leftCol);
 
     if (isLecture) {
-        // Создаем чекбокс "Вопросы" вместо поля с монетами
-        const qWrap = document.createElement('label');
-        qWrap.style.display = 'flex';
-        qWrap.style.alignItems = 'center';
-        qWrap.style.justifyContent = 'center';
-        qWrap.style.fontSize = '11px';
-        qWrap.style.cursor = 'pointer';
-        qWrap.style.height = '30px';
-        qWrap.style.background = 'rgba(0,0,0,0.03)';
-        qWrap.style.border = '1px solid var(--line)';
-        qWrap.style.borderRadius = '2px';
-        qWrap.style.gap = '4px';
+        const centerCol = document.createElement('div');
+        centerCol.style.display = 'flex';
+        centerCol.style.alignItems = 'flex-end';
+        centerCol.style.height = '100%';
+
+        const label = document.createElement('label');
+        label.className = 'custom-chk-label';
 
         const chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.className = 'ff-part-questions';
-        chk.style.cursor = 'pointer';
 
-        qWrap.appendChild(chk);
-        qWrap.appendChild(document.createTextNode('Вопросы'));
+        const box = document.createElement('div');
+        box.className = 'custom-chk-box';
+        box.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-        row.appendChild(idInp);
-        row.appendChild(qWrap);
+        label.appendChild(chk);
+        label.appendChild(box);
+        centerCol.appendChild(label);
+        row.appendChild(centerCol);
     } else {
-        // Старый вариант с монетами (для игр)
         const coinInp = document.createElement('input');
         coinInp.type = 'number';
         coinInp.min = '0';
@@ -1758,8 +1770,6 @@ function addFfParticipantRow(listId) {
         coinInp.style.padding = '2px 6px';
         coinInp.style.fontSize = '12px';
         coinInp.style.boxSizing = 'border-box';
-
-        row.appendChild(idInp);
         row.appendChild(coinInp);
     }
 
@@ -1776,6 +1786,8 @@ function addFfParticipantRow(listId) {
     del.style.background = 'var(--bg)';
     del.style.color = 'var(--muted)';
     del.style.border = '1px solid var(--line)';
+    del.style.alignSelf = isLecture ? 'flex-end' : 'auto';
+    
     del.addEventListener('click', () => {
         row.remove();
         if (qs(listId).children.length === 0) addFfParticipantRow(listId);
@@ -1784,7 +1796,6 @@ function addFfParticipantRow(listId) {
     row.appendChild(del);
     list.appendChild(row);
 }
-
 if (qs('ffGamesAdd')) {
     qs('ffGamesAdd').addEventListener('click', () => addFfParticipantRow('ffGamesParts'));
 }

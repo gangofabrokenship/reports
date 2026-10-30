@@ -368,37 +368,106 @@ loadMentorsFromTable();
 function updateRankFields() {
     const rankVal = qs('rankType').value;
     const cfg = rankTypes[rankVal];
-    
-    qs('rankMentorWrap').classList.toggle('hidden', !cfg.mentor);
-    qs('rankPirateWrap').classList.toggle('hidden', !cfg.pirate);
-    qs('rankFemWrap').classList.toggle('hidden', !cfg.fem);
-    
-    const fields = {
-        'юнги': ['rankId', 'rankBaseName', 'rankMentorWrap', 'rankSpeechWrap'],
-        'матросы': ['rankId', 'rankBaseName', 'rankPirateWrap', 'rankFemWrap', 'rankSpeechWrap'],
-        'старшие матросы': ['rankId', 'rankBaseName', 'rankFemWrap', 'rankSpeechWrap'],
-        'морские волки': ['rankId', 'rankBaseName', 'rankFemWrap', 'rankSpeechWrap']
-    };
+    const grid = document.querySelector('#form-main-blog .grid');
+    if (!grid) return;
 
-    document.querySelectorAll('#form-main-blog .grid > div').forEach(el => el.classList.remove('full'));
+    grid.innerHTML = '';
 
-    const proofWrap = qs('rankProof').parentElement;
-    if (proofWrap) proofWrap.classList.add('full');
+    grid.innerHTML += `
+        <div>
+            <label for="rankType">Посвящение в</label>
+            <select id="rankType"></select>
+        </div>
+        <div>
+            <label for="rankDate">Дата посвящения</label>
+            <select id="rankDate"></select>
+        </div>`;
 
-    const orderList = fields[rankVal] || [];
-    orderList.forEach((id, index) => {
-        const el = qs(id);
-        if (el) el.style.order = index;
-    });
+    grid.innerHTML += `
+        <div>
+            <label for="rankId">ID</label>
+            <input id="rankId" type="text" class="save-id" placeholder="1234567">
+        </div>
+        <div>
+            <label for="rankBaseName">Имя</label>
+            <input id="rankBaseName" type="text" placeholder="—">
+        </div>`;
+
+    grid.innerHTML += `
+        <div class="full">
+            <label for="rankProof">Скриншот(ы)</label>
+            <input id="rankProof" type="text" placeholder="ссылка1 ссылка2 ссылка3">
+            <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+        </div>`;
+
+    if (cfg.pirate) {
+        grid.innerHTML += `
+            <div>
+                <label for="rankPirateName">Пиратское имя</label>
+                <input id="rankPirateName" type="text">
+            </div>
+            <div>
+                <label for="rankFeminine">Феминитив</label>
+                <select id="rankFeminine">
+                  <option>не ставить</option>
+                  <option> ставить</option>
+                </select>
+            </div>`;
+    }
+
+    if (cfg.fem && !cfg.pirate) {
+        grid.innerHTML += `
+            <div class="full">
+                <label for="rankFeminine">Феминитив</label>
+                <select id="rankFeminine">
+                  <option>не ставить</option>
+                  <option> ставить</option>
+                </select>
+            </div>`;
+    }
+
+    if (cfg.mentor) {
+        grid.innerHTML += `
+            <div class="full">
+                <label for="rankMentor">Наставник</label>
+                <select id="rankMentor"></select>
+            </div>`;
+    }
+
+    grid.innerHTML += `
+        <div>
+            <label for="rankSpeech">Речь</label>
+            <select id="rankSpeech">
+              <option>нет</option>
+              <option>есть</option>
+            </select>
+        </div>
+        <div>
+            <label for="rankForm">Заполнение формы</label>
+            <select id="rankForm">
+              <option>нет</option>
+              <option>есть</option>
+            </select>
+        </div>`;
+
+    const currentRank = rankVal;
+    fillSelect(qs('rankType'), Object.keys(rankTypes));
+    qs('rankType').value = currentRank;
+    fillValidDates();
     
-    if (rankVal !== 'юнги') {
-        if (qs('rankSpeechWrap')) qs('rankSpeechWrap').style.order = 10;
-        const formWrap = qs('rankForm').parentElement;
-        if (formWrap) formWrap.style.order = 11;
-    } else {
-        if (qs('rankSpeechWrap')) qs('rankSpeechWrap').style.order = 10;
-        const formWrap = qs('rankForm').parentElement;
-        if (formWrap) formWrap.style.order = 11;
+    if (cfg.mentor) {
+        loadMentorsFromTable();
+    }
+    
+    const savedUserId = localStorage.getItem('shrk_user_id');
+    if (savedUserId) {
+        const idInp = qs('rankId');
+        if (idInp) idInp.value = savedUserId;
+    }
+    const savedUserName = localStorage.getItem('shrk_user_name');
+    if (savedUserName) {
+        const nameInp = qs('rankBaseName');
+        if (nameInp) nameInp.value = savedUserName;
     }
 }
 if (qs('rankType')) qs('rankType').onchange = updateRankFields;

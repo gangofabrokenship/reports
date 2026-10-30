@@ -89,65 +89,84 @@
 </div>
 </div>
 <div id="form-main-blog" class="stack form-view hidden">
-          <div class="card stack">
-            <h2>Посвящение<span class="blog-links"> <a href="https://catwar.net/blog713741" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog713742" target="_blank">catwar.su</a></span></h2>
-            <div class="grid">
-              <div>
-                <label for="rankType">Посвящение в</label>
-                <select id="rankType"></select>
-              </div>
-              <div>
-                <label for="rankDate">Дата посвящения</label>
-                <select id="rankDate"></select>
-              </div>
-              <div class="full">
-                <label for="rankId">ID</label>
-                <input id="rankId" type="text" class="save-id" placeholder="1234567">
-              </div>
+  <div class="card stack">
+    <h2>Посвящение<span class="blog-links"> <a href="https://catwar.net/blog713741" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog713741" target="_blank">catwar.su</a></span></h2>
+    <div class="grid">
+      
+      <!-- 1 ряд -->
+      <div>
+        <label for="rankType">Посвящение в</label>
+        <select id="rankType"></select>
+      </div>
+      <div>
+        <label for="rankDate">Дата посвящения</label>
+        <select id="rankDate"></select>
+      </div>
 
-              <div>
-                <label for="rankProof">Скриншот(ы)</label>
-                <input id="rankProof" type="text" placeholder="ссылка1 ссылка2 ссылка3">
-                <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
-              </div>
-              <div>
-                <label for="rankBaseName">Имя</label>
-                <input id="rankBaseName" type="text" placeholder="—">
-              </div>
-              <div id="rankMentorWrap">
-                <label for="rankMentor">Наставник</label>
-                <select id="rankMentor"></select>
-              </div>
-              <div id="rankPirateWrap" class="hidden">
-                <label for="rankPirateName">Пиратское имя</label>
-                <input id="rankPirateName" type="text">
-              </div>
-              <div id="rankFemWrap" class="hidden">
-                <label for="rankFeminine">Феминитив</label>
-                <select id="rankFeminine">
-                  <option>не ставить</option>
-                  <option> ставить</option>
-                </select>
-              </div>
-              <div id="rankSpeechWrap">
-                <label for="rankSpeech">Речь</label>
-                <select id="rankSpeech">
-                  <option>нет</option>
-                  <option>есть</option>
-                </select>
-              </div>
-            </div>
-            <div class="actions">
-              <button class="primary" id="rankGenerate">Составить отчёт</button>
-            </div>
-          </div>
-          <div class="card">
-            <textarea id="rankResult" class="output" readonly style="min-height: 100px;"></textarea>
-            <div class="actions">
-              <button class="secondary" data-copy="rankResult">Скопировать отчёт</button>
-            </div>
-          </div>
-        </div>
+      <!-- 2 ряд -->
+      <div>
+        <label for="rankId">ID</label>
+        <input id="rankId" type="text" class="save-id" placeholder="1234567">
+      </div>
+      <div>
+        <label for="rankBaseName">Имя</label>
+        <input id="rankBaseName" type="text" placeholder="—">
+      </div>
+
+      <!-- 3 ряд -->
+      <div class="full">
+        <label for="rankProof">Скриншот(ы)</label>
+        <input id="rankProof" type="text" placeholder="ссылка1 ссылка2 ссылка3">
+        <p class="help full"> Скриншоты доказательств лучше загружать на хостинг: <a href="https://ibb.org.ru" target="_blank">ibb.org.ru</a>, <a href="https://pic.maxiol.com" target="_blank">pic.maxiol.com</a> или <a href="https://imgbb.com" target="_blank">imgbb.com</a>. </p>
+      </div>
+
+      <!-- 4 ряд (Матросы) -->
+      <div id="rankPirateWrap" class="hidden">
+        <label for="rankPirateName">Пиратское имя</label>
+        <input id="rankPirateName" type="text">
+      </div>
+      <div id="rankFemWrap" class="hidden">
+        <label for="rankFeminine">Феминитив</label>
+        <select id="rankFeminine">
+          <option>не ставить</option>
+          <option> ставить</option>
+        </select>
+      </div>
+
+      <!-- 5 ряд (Юнги) -->
+      <div id="rankMentorWrap">
+        <label for="rankMentor">Наставник</label>
+        <select id="rankMentor"></select>
+      </div>
+
+      <!-- 6 ряд -->
+      <div id="rankSpeechWrap">
+        <label for="rankSpeech">Речь</label>
+        <select id="rankSpeech">
+          <option>нет</option>
+          <option>есть</option>
+        </select>
+      </div>
+      <div>
+        <label for="rankForm">Заполнение формы</label>
+        <select id="rankForm">
+          <option>нет</option>
+          <option>есть</option>
+        </select>
+      </div>
+
+    </div>
+    <div class="actions">
+      <button class="primary" id="rankGenerate">Составить отчёт</button>
+    </div>
+  </div>
+  <div class="card">
+    <textarea id="rankResult" class="output" readonly style="min-height: 100px;"></textarea>
+    <div class="actions">
+      <button class="secondary" data-copy="rankResult">Скопировать отчёт</button>
+    </div>
+  </div>
+</div>
         <div id="form-awards-blog" class="stack form-view hidden">
           <div class="card stack">
             <h2>Запрос награды<span class="blog-links"> <a href="https://catwar.net/blog747397" target="_blank">catwar.net</a> | <a href="https://catwar.su/blog747397" target="_blank">catwar.su</a></span></h2>

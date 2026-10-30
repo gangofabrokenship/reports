@@ -413,9 +413,7 @@ function updateRankFields() {
                   <option> ставить</option>
                 </select>
             </div>`;
-    }
-
-    if (cfg.fem && !cfg.pirate) {
+    } else if (cfg.fem) {
         grid.innerHTML += `
             <div class="full">
                 <label for="rankFeminine">Феминитив</label>
@@ -470,7 +468,11 @@ function updateRankFields() {
         if (nameInp) nameInp.value = savedUserName;
     }
 }
-if (qs('rankType')) qs('rankType').onchange = updateRankFields;
+document.querySelector('#form-main-blog .grid').addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'rankType') {
+        updateRankFields();
+    }
+});
 if (qs('rankGenerate')) {
     qs('rankGenerate').onclick = () => {
         const cfg = rankTypes[qs('rankType').value];

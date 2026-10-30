@@ -473,6 +473,11 @@ document.querySelector('#form-main-blog .grid').addEventListener('change', (e) =
         updateRankFields();
     }
 });
+
+
+if (qs('rankType')) {
+    updateRankFields();
+}
 if (qs('rankGenerate')) {
     qs('rankGenerate').onclick = () => {
         const cfg = rankTypes[qs('rankType').value];

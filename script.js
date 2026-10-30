@@ -8,7 +8,7 @@ const rankTypes = {
 };
 const medalGroups = {
     'Для малышей': ['Юный активист', 'Непревзойденный активист', 'Юный непоседа', 'Неповторимый непоседа', 'Юный страж', 'Превосходный страж'],
-    'За навыки': ['Острые когти', 'Умелый боец', 'Покоритель волн', 'Покоривший море', 'Покоритель вершин', 'Покоривший солёные скалы', 'Археолог-любитель', 'Великий кладоискатель', 'Собачий нюх', 'Совершенное чутьё'],
+    'За навыки': ['Острые когти', 'Умелый боец', 'Покоритель волн', 'Покоривший море', 'Покоритель вершин', 'Покоривший солёные скалы', 'Археолог-любитель', 'Великий кладоискатель', 'Собачий нюх', 'Совершенное чутьё', 'Попутный ветер', 'Вечный скиталец', 'Жемчужный глаз', 'Знаток окрестностей'],
     'Каратели': ['Правосудие', 'Ветеран передовой', 'Ни шагу назад', 'Наш дом — наша крепость'],
     'Связанные со сферами': ['Спокойные берега', 'Блюститель порядка', 'Всегда начеку', 'Спокойствие бесценно', 'Прирождённый охотник', 'Неутомимый добытчик', 'Молодой поварёнок', 'Талантливый кулинар', 'Любимец доктора', 'Опытный травник', 'Проворный зверолов', 'Прошедший тысячи троп', 'Исцеляющий взгляд', 'Заклинатель трав'],
     'Связанные с отрядами': ['Опыт предков', 'Мудрость поколений', 'Верный напарник', 'Крепкая лапа', 'Перо знаний', 'Мозгодуй', 'Голос прошлого', 'Связь времён', 'Исследующий морские глубины', 'Пересчитавший все песчинки на морском дне', 'Хитрый вор перьев', 'Прозвавшийся птичьим несчастьем', 'Обнаруживший залежи драгоценностей', 'Хранитель морских сокровищ', 'Слушающий причитания моря', 'Позаботившийся о морском покое', 'Мастер кисти', 'Виртуоз кисти', 'Овладевающий морским искусством', 'Мастер морского боя', 'Боевой товарищ', 'Старший зверь', 'Ловкий добытчик лакомства', 'Бесплатный сыр лишь в мышеловке', 'Сырный любитель', 'Сырная душа', 'Ловец горячих новостей', 'Охотник за сенсациями', 'Искусство убеждения', 'Продай мне эту ручку', 'Игривый друг', 'Мастер развлечений', 'Подмастерье настроения', 'Хранитель праздника', 'Летописец', 'Миротворец', 'Тянущийся к морским звёздам', 'Знаток глубин', 'Душа компании', 'Главный затейник', 'Ни соринки на борту', 'Чистые лапы грязи не боятся'],
@@ -368,12 +368,37 @@ loadMentorsFromTable();
 function updateRankFields() {
     const rankVal = qs('rankType').value;
     const cfg = rankTypes[rankVal];
+    
     qs('rankMentorWrap').classList.toggle('hidden', !cfg.mentor);
     qs('rankPirateWrap').classList.toggle('hidden', !cfg.pirate);
     qs('rankFemWrap').classList.toggle('hidden', !cfg.fem);
-    const speechWrap = qs('rankSpeechWrap');
-    if (speechWrap) {
-        speechWrap.classList.toggle('full', rankVal === 'матросы');
+    
+    const fields = {
+        'юнги': ['rankId', 'rankBaseName', 'rankMentorWrap', 'rankSpeechWrap'],
+        'матросы': ['rankId', 'rankBaseName', 'rankPirateWrap', 'rankFemWrap', 'rankSpeechWrap'],
+        'старшие матросы': ['rankId', 'rankBaseName', 'rankFemWrap', 'rankSpeechWrap'],
+        'морские волки': ['rankId', 'rankBaseName', 'rankFemWrap', 'rankSpeechWrap']
+    };
+
+    document.querySelectorAll('#form-main-blog .grid > div').forEach(el => el.classList.remove('full'));
+
+    const proofWrap = qs('rankProof').parentElement;
+    if (proofWrap) proofWrap.classList.add('full');
+
+    const orderList = fields[rankVal] || [];
+    orderList.forEach((id, index) => {
+        const el = qs(id);
+        if (el) el.style.order = index;
+    });
+    
+    if (rankVal !== 'юнги') {
+        if (qs('rankSpeechWrap')) qs('rankSpeechWrap').style.order = 10;
+        const formWrap = qs('rankForm').parentElement;
+        if (formWrap) formWrap.style.order = 11;
+    } else {
+        if (qs('rankSpeechWrap')) qs('rankSpeechWrap').style.order = 10;
+        const formWrap = qs('rankForm').parentElement;
+        if (formWrap) formWrap.style.order = 11;
     }
 }
 if (qs('rankType')) qs('rankType').onchange = updateRankFields;
@@ -388,17 +413,21 @@ if (qs('rankGenerate')) {
         const date = qs('rankDate').value;
         const proofs = makeProofs(qs('rankProof').value);
         const speech = qs('rankSpeech').value;
+        const formFill = qs('rankForm').value;
+        
         let text = `Я, [link${id}] [${id}], желаю посвятиться в [b]${cfg.label}[/b] (${date}).\n`;
         text += `${proofs}\n\n`;
         text += `[b]Имя:[/b] ${baseName}\n`;
         if (cfg.pirate) text += `[b]Пиратское имя:[/b] ${pirateName}\n`;
         if (cfg.mentor) text += `[b]Наставник:[/b] ${qs('rankMentor').value}\n`;
         if (cfg.fem) text += `[b]Феминитив:[/b] ${qs('rankFeminine').value}\n`;
-        text += `\n[b]Речь:[/b] ${speech}`;
+        
+        text += `[b]Речь:[/b] ${speech}\n`;
+        text += `[b]Заполнение формы:[/b] ${formFill}`;
+        
         qs('rankResult').value = text;
     };
 }
-
 function syncAwardsGroups() {
     const modeSelect = qs('awardsMode');
     const mode = modeSelect.value;
